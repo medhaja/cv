@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Isocline case study · Medhaja H L</title>
+  <meta name="description" content="How Medhaja H L designed and built Isocline, an open-source, self-hosted runtime and visual builder for durable agent workflows: problem, architecture, engineering decisions, limitations and evidence.">
+  <link rel="canonical" href="https://medhaja.me/isocline/">
+  <meta name="theme-color" content="#faf9f6">
+
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="Medhaja H L">
+  <meta property="og:title" content="Isocline case study · Medhaja H L">
+  <meta property="og:description" content="An open-source control plane and durable execution runtime for agent workflows: problem, architecture, tradeoffs and evidence.">
+  <meta property="og:url" content="https://medhaja.me/isocline/">
+  <meta property="og:image" content="https://medhaja.me/img/isocline/og-isocline.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="The Isocline dashboard showing recent workflow runs, token usage and models in use.">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Isocline case study · Medhaja H L">
+  <meta name="twitter:description" content="An open-source control plane and durable execution runtime for agent workflows.">
+  <meta name="twitter:image" content="https://medhaja.me/img/isocline/og-isocline.png">
+
+  <link rel="icon" href="../img/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="../img/apple-touch-icon.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/site.css">
+  <script>document.documentElement.classList.add("js");</script>
+  <script src="../js/site.js" defer></script>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareSourceCode",
+    "name": "Isocline",
+    "description": "Open-source control plane and durable execution harness for production AI agents.",
+    "codeRepository": "https://github.com/medhaja/isocline",
+    "license": "https://www.apache.org/licenses/LICENSE-2.0",
+    "programmingLanguage": ["Python", "TypeScript"],
+    "author": { "@type": "Person", "name": "Medhaja H L", "url": "https://medhaja.me/" }
+  }
+  </script>
+</head>
+
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <nav class="wrap nav" aria-label="Primary">
+      <a class="brand" href="../">MEDHAJA</a>
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-menu">
+        <span class="nav-toggle-bars" aria-hidden="true"></span>
+        <span class="nav-toggle-text">Menu</span>
+      </button>
+      <ul class="nav-links" id="nav-menu">
+        <li><a href="../#work">Work</a></li>
+        <li><a href="../#experience">Experience</a></li>
+        <li><a href="../#about">About</a></li>
+        <li><a href="../#contact">Contact</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main id="main">
+    <article aria-labelledby="cs-title">
+
+      <!-- ============================== INTRO ============================= -->
+      <section class="cs-hero">
+        <div class="wrap">
+          <a class="crumb text-link" href="../#work">← Back to work</a>
+          <span class="label">Case study · Isocline</span>
+          <h1 id="cs-title" style="margin-top:1rem">A durable runtime for agent workflows, with a visual builder on top.</h1>
+          <p class="lead">Isocline is an open-source, self-hosted control plane for agent workflows. You compose a workflow on a canvas, run it with any model, and the runtime keeps it correct through crashes, restarts, slow human approvals and failed side effects.</p>
+
+          <dl class="cs-meta">
+            <div><dt class="label">Role</dt><dd>Creator and developer</dd></div>
+            <div><dt class="label">Type</dt><dd>Open-source product · Apache-2.0</dd></div>
+            <div><dt class="label">Stack</dt><dd>FastAPI · Celery · PostgreSQL + pgvector · Redis · Next.js</dd></div>
+            <div><dt class="label">Releases</dt><dd>3.3.0 first public release; Windows installer published with each release</dd></div>
+          </dl>
+
+          <div class="actions">
+            <a class="btn btn-primary ext" href="https://github.com/medhaja/isocline" rel="noopener">Source on GitHub</a>
+            <a class="btn btn-secondary ext" href="https://github.com/medhaja/isocline/blob/main/docs/quickstart.md" rel="noopener">Quick start</a>
+            <a class="text-link ext" href="https://github.com/medhaja/isocline/tree/main/docs" rel="noopener">Documentation</a>
+            <a class="text-link ext" href="https://github.com/medhaja/isocline/releases/latest" rel="noopener">Windows installer</a>
+          </div>
+
+          <figure class="shot cs-shot">
+            <div class="shot-bar" aria-hidden="true"><span></span><span></span><span></span><code>localhost:3000/dashboard</code></div>
+            <picture>
+              <source type="image/webp" srcset="../img/isocline/dashboard-960.webp 960w, ../img/isocline/dashboard-1600.webp 1600w" sizes="(min-width: 1200px) 1100px, 100vw">
+              <img src="../img/isocline/dashboard-1600.png" width="1600" height="792" fetchpriority="high" decoding="async"
+                   alt="Isocline dashboard: summary tiles for runs, success rate, tokens, spend and average duration; a table of recent completed workflow runs; and a list of models in use across OpenAI, Google and Anthropic.">
+            </picture>
+          </figure>
+          <p class="caption">The dashboard of a local installation: recent runs with duration, tokens and estimated cost per run, and the models used across providers.</p>
+        </div>
+      </section>
+
+      <!-- ============================ 01 PROBLEM ========================== -->
+      <section class="section" id="problem" aria-labelledby="problem-title">
+        <div class="wrap cs-section">
+          <header><span class="label">01</span><h2 id="problem-title">Problem and users</h2></header>
+          <div class="cs-content">
+            <p>Building an agent is becoming easy. <strong>Operating agent workflows reliably is not.</strong> Agent workflows run for seconds to days. Model calls are slow and fail or rate-limit. Workers crash mid-run and deploys restart everything. A person may approve a step tomorrow, an external system may call back next week, and a side effect may need undoing when a later step fails. Generated code also has to run somewhere it can’t reach credentials or the network.</p>
+            <p>Most visual agent builders treat every edge as “some text”, so mismatched data only surfaces deep inside a paid model call.</p>
+            <h3>Intended users</h3>
+            <ul class="checklist">
+              <li><strong>Developers and teams</strong> who want to build agent workflows visually or through an API, run them on their own infrastructure, and keep a full trace of every run.</li>
+              <li><strong>Operators</strong> self-hosting on commodity components (PostgreSQL, Redis, Celery) rather than adopting new infrastructure.</li>
+              <li><strong>Individuals</strong> using the Windows desktop app and 53 role-based templates (for example, study planners, interview kits, incident postmortems and research briefs).</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================= 02 BUILT =========================== -->
+      <section class="section" id="built" aria-labelledby="built-title">
+        <div class="wrap cs-section">
+          <header><span class="label">02</span><h2 id="built-title">What I built</h2></header>
+          <div class="cs-content">
+            <ul class="checklist">
+              <li><strong>Visual builder:</strong> canvas with typed ports, variables, undo/redo, autosave and JSON import/export.</li>
+              <li><strong>Node library:</strong> inputs and outputs, agents, seven tools, condition, router, parallel, merge, loop, retry, transform, human approval, sub-workflow, timer, callback and event waits, and triggers.</li>
+              <li><strong>Durable executor:</strong> parallel DAG execution, heartbeats, crash recovery, checkpoints, rerun from any node, and saga compensation.</li>
+              <li><strong>Model layer:</strong> one provider registry for OpenAI, Anthropic, Gemini, OpenRouter, Ollama and any OpenAI-compatible server (vLLM, LM Studio, llama.cpp, LiteLLM), with fallbacks, structured JSON-schema output, and token and cost tracking. A deterministic test provider runs every workflow without an API key.</li>
+              <li><strong>Tools and knowledge:</strong> web search, SSRF-protected HTTP, sandboxed Python, MCP over streamable HTTP with per-server allowlists, and knowledge bases on pgvector.</li>
+              <li><strong>Operations:</strong> webhook, schedule, event and file triggers, a run inspector, evaluations and experiments, monitoring, role-based access and an audit log.</li>
+              <li><strong>Developer surface:</strong> REST API with OpenAPI, a Python SDK and a CLI.</li>
+              <li><strong>Desktop app:</strong> a single-process Windows build using SQLite and in-process workers, with Python steps sandboxed in a Windows AppContainer.</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- =========================== 03 OWNERSHIP ========================= -->
+      <section class="section" id="ownership" aria-labelledby="ownership-title">
+        <div class="wrap cs-section">
+          <header><span class="label">03</span><h2 id="ownership-title">My ownership</h2></header>
+          <div class="cs-content">
+            <p>I created Isocline and develop it. I’m responsible for the product scope, the architecture and design documents, the backend runtime, the web builder, the SDK and CLI, Windows desktop packaging, and release verification.</p>
+            <p>I also decided what the open-source edition includes. API deployments, environment promotion and the in-builder workflow assistant are deliberately out of scope, and the repository documents that boundary.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========================= 04 ARCHITECTURE ======================== -->
+      <section class="section" id="architecture" aria-labelledby="architecture-title">
+        <div class="wrap cs-section">
+          <header><span class="label">04</span><h2 id="architecture-title">Architecture and key decisions</h2></header>
+          <div class="cs-content">
+
+            <!-- Redrawn from the architecture diagram in the Isocline README and docs/architecture.md. -->
+            <figure class="arch" aria-labelledby="arch-caption">
+              <div class="arch-tier">
+                <span class="arch-tier-label">Clients</span>
+                <div class="arch-row c2">
+                  <div class="node"><strong>Web UI</strong><span>Next.js builder + run inspector</span></div>
+                  <div class="node"><strong>SDK / CLI / HTTP</strong><span>personal access tokens</span></div>
+                </div>
+              </div>
+              <div class="arch-arrow">requests</div>
+              <div class="arch-tier">
+                <span class="arch-tier-label">API</span>
+                <div class="node"><strong>FastAPI</strong><span>compiler · contracts · preflight · immutable run snapshot</span></div>
+              </div>
+              <div class="arch-arrow">runs and events persisted; run id enqueued</div>
+              <div class="arch-tier">
+                <span class="arch-tier-label">State</span>
+                <div class="arch-row c2">
+                  <div class="node key"><strong>PostgreSQL + pgvector</strong><span>authoritative: runs, node runs, events, checkpoints, waits</span></div>
+                  <div class="node"><strong>Redis</strong><span>disposable: queue, cache, live events</span></div>
+                </div>
+              </div>
+              <div class="arch-arrow">claim → heartbeat → walk the DAG</div>
+              <div class="arch-tier">
+                <span class="arch-tier-label">Execution</span>
+                <div class="arch-row c2">
+                  <div class="node"><strong>Celery workers</strong><span>durable executor</span></div>
+                  <div class="node"><strong>Beat</strong><span>sweeper · waits · schedules</span></div>
+                </div>
+              </div>
+              <div class="arch-arrow">calls out to</div>
+              <div class="arch-tier">
+                <span class="arch-tier-label">Effects</span>
+                <div class="arch-row c3">
+                  <div class="node"><strong>Model providers</strong><span>one registry, many adapters</span></div>
+                  <div class="node"><strong>Tools / MCP servers</strong><span>SSRF-checked HTTP</span></div>
+                  <div class="node"><strong>Python sandbox</strong><span>one container per execution</span></div>
+                </div>
+              </div>
+              <figcaption class="caption" id="arch-caption">Server architecture, redrawn from the project’s <a href="https://github.com/medhaja/isocline/blob/main/docs/architecture.md" rel="noopener">architecture document</a>. Seven long-running services in Docker Compose.</figcaption>
+            </figure>
+
+            <h3>Decisions that shaped it</h3>
+            <ul class="decisions">
+              <li>
+                <h4>PostgreSQL is the only source of truth</h4>
+                <p>Every node run, output, event, wait, checkpoint and compensation is a database row. Redis only carries queue messages and live events, so losing Redis loses nothing: a sweeper re-enqueues runs from PostgreSQL.</p>
+                <p class="tradeoff">Every node writes to the database before the next one is scheduled. That bookkeeping dominates short, deterministic nodes.</p>
+              </li>
+              <li>
+                <h4>Execution as deterministic replay over persisted outcomes</h4>
+                <p>A worker atomically claims a run, loads prior node runs and walks the DAG. Completed nodes return their stored output instead of re-executing, so expensive model calls aren’t repeated after a crash.</p>
+                <p class="tradeoff">Execution is at-least-once per node. A node that was running when its worker died runs again, so side-effecting tools must be idempotent or declare compensation.</p>
+              </li>
+              <li>
+                <h4>Waiting holds no worker</h4>
+                <p>Approvals, timers, callbacks and events persist a wait state and release the worker. A conditional update resumes the run, so concurrent resumes cannot fire twice.</p>
+                <p class="tradeoff">A node paused for a tool-call approval re-runs from its start once approved, repeating its model calls.</p>
+              </li>
+              <li>
+                <h4>Typed contracts between nodes, gradually</h4>
+                <p>Ports carry types such as <code>Text</code>, <code>JSON&lt;schema&gt;</code> and <code>Artifact&lt;csv&gt;</code>. Incompatible edges are rejected at compile time, before any money is spent, and outputs are validated at run time.</p>
+                <p class="tradeoff">Untyped graphs keep working for backward compatibility, so guarantees are only as strong as the annotations.</p>
+              </li>
+              <li>
+                <h4>An in-house provider abstraction</h4>
+                <p>One interface with adapters per API. Errors are normalised to kinds such as rate limit, timeout and context limit, so retry, fallback and provider-switch rules work the same for every provider. Capabilities and prices live in data, not code.</p>
+                <p class="tradeoff">A common message format hides some provider-specific features, and cost estimates are only as accurate as the price catalog.</p>
+              </li>
+              <li>
+                <h4>A fresh, network-less container per Python execution</h4>
+                <p>Generated code never runs in the API or worker. Each execution gets a disposable container with no network, a read-only root, dropped capabilities and resource limits, plus optional gVisor.</p>
+                <p class="tradeoff">Container start-up latency on every execution, and no <code>pip install</code> at run time.</p>
+              </li>
+              <li>
+                <h4>Saga compensation instead of distributed transactions</h4>
+                <p>Side-effecting HTTP steps can register an undo action. If the run fails, the undo actions run in reverse completion order, each one checked by the policy engine.</p>
+                <p class="tradeoff">Compensation is best effort and opt-in, and compensating actions must themselves be idempotent.</p>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========================= 05 LIMITATIONS ========================= -->
+      <section class="section" id="limitations" aria-labelledby="limitations-title">
+        <div class="wrap cs-section">
+          <header><span class="label">05</span><h2 id="limitations-title">Known limitations</h2></header>
+          <div class="cs-content">
+            <p>These are documented in the repository rather than hidden:</p>
+            <ul class="checklist">
+              <li>Per-node overhead is dominated by durable bookkeeping (about 100 ms per node on a 1-vCPU reference machine), so very wide fan-outs of trivial nodes are bookkeeping-bound.</li>
+              <li>No exactly-once guarantee: execution is at-least-once per node across crashes.</li>
+              <li>The sandbox’s Docker mode needs the host Docker socket, and plain Docker is not a hardened boundary against kernel exploits. gVisor or a dedicated VM is recommended for untrusted code.</li>
+              <li>MCP supports streamable-HTTP servers only (no stdio, no OAuth).</li>
+              <li>Default embeddings are lexical, not semantic, until an embedding model is configured.</li>
+              <li>A single queue serves all runs, so resource classes are recorded but not routed.</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- =========================== 06 EVIDENCE ========================== -->
+      <section class="section" id="evidence" aria-labelledby="evidence-title">
+        <div class="wrap cs-section">
+          <header><span class="label">06</span><h2 id="evidence-title">Evidence</h2></header>
+          <div class="cs-content">
+            <h3 style="margin-top:0">Release verification</h3>
+            <p>Recorded for the 3.3.0 release commit on Ubuntu 24.04 with PostgreSQL 16, Redis 7 and Celery, using the deterministic test provider:</p>
+            <div class="table-wrap">
+              <table>
+                <caption>Source: docs/verification/release-3.3.0.txt</caption>
+                <thead><tr><th scope="col">Check</th><th scope="col">Result</th></tr></thead>
+                <tbody>
+                  <tr><th scope="row">API unit, integration, product, security and template tests</th><td class="num">233 passed</td></tr>
+                  <tr><th scope="row">Durability scenarios: worker <code>SIGKILL</code> mid-node, API / worker / Redis restarts during an approval, Redis <code>FLUSHALL</code> during a timer, lost queue message, checkpoint restore, rerun from node, saga ordering</th><td class="num">10 / 10</td></tr>
+                  <tr><th scope="row">Every workflow template created and run to completion</th><td class="num">53 / 53</td></tr>
+                  <tr><th scope="row">Product smoke checks: SDK, CLI, import/export, sandbox, knowledge base, signed webhook, schedule trigger</th><td class="num">9 / 9</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="note"><p>Not verified at that release: <code>docker compose up</code> end to end, and the Python sandbox in Docker mode (that environment had no Docker). CI builds the images and runs the live checks on every push.</p></div>
+
+            <h3>Reference benchmarks</h3>
+            <p>Measured on a single shared 1 vCPU (Intel Xeon 2.80 GHz, 3.9 GB RAM), with API, worker, beat, PostgreSQL and Redis on the same core, which inflates every live number.</p>
+            <div class="table-wrap">
+              <table>
+                <caption>Source: benchmarks/README.md · reference run 2026-09-30</caption>
+                <thead><tr><th scope="col">Benchmark</th><th scope="col">n</th><th scope="col">P50</th><th scope="col">P95</th></tr></thead>
+                <tbody>
+                  <tr><th scope="row">Compile + validate, 100-node graph</th><td class="num">30</td><td class="num">4.07 ms</td><td class="num">4.52 ms</td></tr>
+                  <tr><th scope="row">Queue pickup (run created → execution started)</th><td class="num">30</td><td class="num">46.81 ms</td><td class="num">65.35 ms</td></tr>
+                  <tr><th scope="row">Per-node overhead, 50-node sequential chain</th><td class="num">6</td><td class="num">101.10 ms</td><td class="num">110.35 ms</td></tr>
+                  <tr><th scope="row">Durable continuation (approve → run completed)</th><td class="num">15</td><td class="num">396.26 ms</td><td class="num">443.84 ms</td></tr>
+                </tbody>
+              </table>
+            </div>
+
+            <h3>Links</h3>
+            <ul class="evidence-list">
+              <li><span class="label">Code</span><a class="ext" href="https://github.com/medhaja/isocline" rel="noopener">github.com/medhaja/isocline</a></li>
+              <li><span class="label">Docs</span><a class="ext" href="https://github.com/medhaja/isocline/tree/main/docs" rel="noopener">Documentation, including the quick start, self-hosting and security guides</a></li>
+              <li><span class="label">Design</span><a class="ext" href="https://github.com/medhaja/isocline/tree/main/docs/design" rel="noopener">Design documents: durable execution, checkpointing, sagas, sandbox, contracts, providers</a></li>
+              <li><span class="label">Verification</span><a class="ext" href="https://github.com/medhaja/isocline/blob/main/docs/verification/release-3.3.0.txt" rel="noopener">Release 3.3.0 verification record</a></li>
+              <li><span class="label">Benchmarks</span><a class="ext" href="https://github.com/medhaja/isocline/blob/main/benchmarks/README.md" rel="noopener">Benchmark method and reference run</a></li>
+              <li><span class="label">CI</span><a class="ext" href="https://github.com/medhaja/isocline/blob/main/.github/workflows/ci.yml" rel="noopener">CI pipeline: tests, live durability checks, image builds, secret scan</a></li>
+              <li><span class="label">Download</span><a class="ext" href="https://github.com/medhaja/isocline/releases/latest" rel="noopener">Latest release with the Windows installer</a></li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================== CTA =============================== -->
+      <section class="section contact" aria-labelledby="cta-title">
+        <div class="wrap">
+          <span class="label">Work with me</span>
+          <h2 id="cta-title" style="margin-top:0.9rem">Let’s build something useful.</h2>
+          <p class="lead" style="margin-top:1.25rem">Interested in Staff / Lead GenAI roles, or in building agent workflows and GenAI applications for your team.</p>
+          <div class="actions">
+            <a class="btn btn-primary" href="mailto:medhajahlbhat@gmail.com">Email medhajahlbhat@gmail.com</a>
+            <a class="btn btn-secondary" href="../#work">Back to work</a>
+          </div>
+        </div>
+      </section>
+    </article>
+  </main>
+
+  <footer class="site-footer mono">
+    <div class="wrap">
+      <span>© 2026 Medhaja H L</span>
+      <span><a href="../">medhaja.me</a> · <a href="https://github.com/medhaja" rel="noopener">GitHub</a> · <a href="https://www.linkedin.com/in/medhaja" rel="noopener">LinkedIn</a></span>
+    </div>
+  </footer>
+</body>
+</html>
