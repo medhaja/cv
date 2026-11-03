@@ -31,12 +31,47 @@
       "RAG and agent work at Biz-Metric and SourceFuse",
       "Harvard Business School Online · Certificate Program · 2022",
       "A research workflow runs specialist agents in parallel, merges their outputs, and pauses for human approval before generating a report.",
-      "This is demonstrated functionality, not a customer deployment."
+      "This is demonstrated functionality, not a customer deployment.",
+      "Led development of an enterprise agentic accelerator that migrates Azure Data Factory (ADF) pipelines to PySpark, combining deterministic translation, LLM-based semantic validation and automated repair workflows, reducing manual migration effort by 90%.",
+      "Apr 2024",
+      "Earlier",
+      "Machine Learning Engineer (Freelance)",
+      "PyImageSearch",
+      "Jun 2020",
+      "Mar 2021",
+      "Converted Python projects into cloud-based notebooks and wrote blog posts on the process.",
+      "Machine Learning Engineer Intern",
+      "Harman International",
+      "Sep 2019",
+      "Built anomaly detection on real-time 5G telematics data using autoencoders on Amazon SageMaker.",
+      "Selected work",
+      "L1 Interviewer Bot",
+      "Voice AI · Agent orchestration",
+      "A voice-first conversational agent that screens technical candidates, using RAG to probe specific technical domains, with automated technical and communication scoring and a low-latency voice-response loop."
     ],
     "out/isocline/index.html": [
       "Demonstrated workflow",
       "A research workflow runs specialist agents in parallel, merges their outputs, and pauses for human approval before generating a report. The run inspector shows each node’s output, token usage, latency and estimated cost.",
       "This is demonstrated functionality, not a customer deployment."
+    ]
+  },
+  "changes_log": {
+    "2026-11-04 SourceFuse dates": "Apr 2023 – Apr 2024 (was Apr 2023 – Oct 2024)",
+    "2026-11-04 Earlier entries": "PyImageSearch (Jun 2020 – Mar 2021) and Harman International (Sep 2019 – Jun 2020) added below EXL",
+    "2026-11-04 Biz-Metric first bullet": "ADF-to-PySpark accelerator, 90% figure only",
+    "2026-11-04 Selected work": "L1 Interviewer Bot card; Demo video link hidden until URL is supplied",
+    "2026-11-04 Résumé": "Links hidden (site.links.resume = null) until an approved PDF is in public/resume/"
+  },
+  "forbidden": {
+    "out/index.html": [
+      "70%",
+      "Data Scientist",
+      "Résumé",
+      "Demo video",
+      "Apr 2023 – Oct 2024"
+    ],
+    "out/isocline/index.html": [
+      "70%"
     ]
   }
 }

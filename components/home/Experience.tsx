@@ -26,7 +26,7 @@ export function Experience() {
           {/* Spine */}
           <span aria-hidden="true" className="absolute bottom-2 left-[5px] top-2 w-px bg-line-strong" />
           {experience.roles.map((r) => (
-            <li key={r.org} className="relative grid grid-cols-1 gap-x-6 gap-y-2 pb-12 pl-8 last:pb-0 md:grid-cols-9">
+            <li key={r.org} className="relative grid grid-cols-1 gap-x-6 gap-y-2 pb-12 pl-8 md:grid-cols-9">
               <span
                 aria-hidden="true"
                 className={`absolute left-0 top-[0.45rem] size-[11px] rounded-full border ${
@@ -55,6 +55,35 @@ export function Experience() {
               </div>
             </li>
           ))}
+
+          {/* Earlier: compact entries that complete the 5+ years */}
+          <li className="relative pl-8">
+            <span aria-hidden="true" className="absolute left-[2px] top-[0.3rem] size-[7px] rounded-full border border-line-strong bg-ink-950" />
+            <h3 id="experience-earlier" className="label">
+              {experience.earlierLabel}
+            </h3>
+            <ul aria-labelledby="experience-earlier" className="mt-5 flex flex-col gap-6">
+              {experience.earlier.map((e) => (
+                <li key={e.org} className="grid grid-cols-1 gap-x-6 gap-y-1.5 md:grid-cols-9">
+                  <p className="font-mono text-small tabular text-fg-subtle md:col-span-2">
+                    <time dateTime={e.start.iso}>{e.start.label}</time> – <time dateTime={e.end.iso}>{e.end.label}</time>
+                  </p>
+                  <div className="md:col-span-7">
+                    <h4 className="text-body font-medium text-fg">
+                      {e.title}{" "}
+                      <span className="block font-normal text-fg-muted sm:inline">
+                        <span aria-hidden="true" className="hidden sm:inline">
+                          ·{" "}
+                        </span>
+                        {e.org}
+                      </span>
+                    </h4>
+                    <p className="mt-1.5 text-small text-fg-muted">{e.text}</p>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </li>
         </ol>
       </div>
     </Section>

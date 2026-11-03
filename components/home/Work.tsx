@@ -1,4 +1,4 @@
-import { dashboardShot, earlierWork, isocline, work } from "@/content/site";
+import { dashboardShot, earlierWork, isocline, selectedWork, work } from "@/content/site";
 import { Rich } from "../Rich";
 import { Button, Label, Section, ShotPanel, Tag, TextLink } from "../ui";
 import { SmartLink } from "../SmartLink";
@@ -37,6 +37,7 @@ export function Work() {
       }
     >
       <Isocline />
+      <SelectedWork />
       <EarlierWork />
     </Section>
   );
@@ -125,6 +126,41 @@ function Isocline() {
         {textLinks.map((l) => (
           <TextLink key={l.href} link={l} className="text-small" />
         ))}
+      </div>
+    </div>
+  );
+}
+
+function SelectedWork() {
+  return (
+    <div aria-labelledby="selected-title" className="mt-28 md:mt-40" role="region">
+      <div className="grid grid-cols-1 gap-x-6 gap-y-6 md:grid-cols-12">
+        <h2 id="selected-title" className="label md:col-span-3">
+          {selectedWork.label}
+        </h2>
+        <div className="grid grid-cols-1 gap-4 md:col-span-9">
+          {selectedWork.projects.map((p) => {
+            const links = p.links.filter((l): l is { label: string; href: string; external?: boolean } => !!l.href);
+            return (
+              <article key={p.id} id={p.id} aria-labelledby={`${p.id}-title`} className="panel scroll-mt-24 p-6 md:p-8">
+                <p>
+                  <Tag>{p.tag}</Tag>
+                </p>
+                <h3 id={`${p.id}-title`} className="mt-5 text-heading font-medium md:text-[1.75rem] md:leading-tight">
+                  {p.title}
+                </h3>
+                <p className="mt-4 max-w-[64ch] text-lead text-fg-muted">{p.description}</p>
+                {links.length > 0 && (
+                  <div className="mt-8 flex gap-6 font-mono text-small">
+                    {links.map((l) => (
+                      <TextLink key={l.href} link={l} />
+                    ))}
+                  </div>
+                )}
+              </article>
+            );
+          })}
+        </div>
       </div>
     </div>
   );

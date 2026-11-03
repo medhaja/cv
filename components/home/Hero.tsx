@@ -1,4 +1,4 @@
-import { hero } from "@/content/site";
+import { hero, site } from "@/content/site";
 import { Rich } from "../Rich";
 import { Container, Button, Label, TextLink } from "../ui";
 import { HeroGraph } from "../hero/HeroGraph";
@@ -47,6 +47,11 @@ export function Hero() {
                   <TextLink link={l} />
                 </li>
               ))}
+              {site.links.resume && (
+                <li>
+                  <TextLink link={{ label: "Résumé", href: site.links.resume }} />
+                </li>
+              )}
             </ul>
           </div>
         </div>

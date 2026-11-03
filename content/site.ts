@@ -42,6 +42,11 @@ export const site = {
     isoclineQuickstart: "https://github.com/medhaja/isocline/blob/main/docs/quickstart.md",
     isoclineRelease: "https://github.com/medhaja/isocline/releases/latest",
     isoclineArchitecture: "https://github.com/medhaja/isocline/blob/main/docs/architecture.md",
+    /**
+     * Résumé PDF. Hidden while null. Enable with "/resume/Medhaja-H-L-Resume.pdf" once a
+     * PDF without a phone number and without the 70% cost figure is in public/resume/.
+     */
+    resume: null as string | null,
   },
   copyright: "© 2026 Medhaja H L",
   nav: [
@@ -171,6 +176,30 @@ export const isocline = {
   ] satisfies Link[],
 };
 
+export type SelectedProject = {
+  id: string;
+  title: string;
+  tag: string;
+  description: string;
+  /** Links with a null href are hidden until the URL is supplied. */
+  links: { label: string; href: string | null; external?: boolean }[];
+};
+
+/** Owner-supplied (Nov 2026). No impact claims on these cards. */
+export const selectedWork = {
+  label: "Selected work",
+  projects: [
+    {
+      id: "p-interviewer",
+      title: "L1 Interviewer Bot",
+      tag: "Voice AI · Agent orchestration",
+      description:
+        "A voice-first conversational agent that screens technical candidates, using RAG to probe specific technical domains, with automated technical and communication scoring and a low-latency voice-response loop.",
+      links: [{ label: "Demo video", href: null, external: true }],
+    },
+  ] as SelectedProject[],
+};
+
 export type Project = {
   id: string;
   year: string;
@@ -253,6 +282,7 @@ export const experience = {
       end: null,
       current: true,
       bullets: [
+        "Led development of an enterprise agentic accelerator that migrates Azure Data Factory (ADF) pipelines to PySpark, combining deterministic translation, LLM-based semantic validation and automated repair workflows, reducing manual migration effort by 90%.",
         "Lead delivery of enterprise document-processing and knowledge-retrieval applications, owning the technical architecture and guiding engineers through implementation, evaluation and deployment.",
         "Build document-processing agents and RAG pipelines, orchestrating multiple models with LangGraph and LiteLLM, including routing, failure handling and output-quality checks.",
       ],
@@ -272,7 +302,7 @@ export const experience = {
       title: "Software Engineer, AI/ML",
       org: "SourceFuse",
       start: { label: "Apr 2023", iso: "2023-04" },
-      end: { label: "Oct 2024", iso: "2024-10" },
+      end: { label: "Apr 2024", iso: "2024-04" },
       bullets: [
         "Built enterprise knowledge-retrieval (RAG) applications with FAISS and FastAPI, connecting document retrieval to LLM generation.",
         "Integrated multiple model backends — OpenAI, Mistral, Llama 2 and Amazon Bedrock — into these applications.",
@@ -288,6 +318,24 @@ export const experience = {
       ],
     },
   ] satisfies Role[],
+  /** Compact "Earlier" entries below EXL (owner-supplied, Nov 2026). */
+  earlierLabel: "Earlier",
+  earlier: [
+    {
+      org: "PyImageSearch",
+      title: "Machine Learning Engineer (Freelance)",
+      start: { label: "Jun 2020", iso: "2020-06" },
+      end: { label: "Mar 2021", iso: "2021-03" },
+      text: "Converted Python projects into cloud-based notebooks and wrote blog posts on the process.",
+    },
+    {
+      org: "Harman International",
+      title: "Machine Learning Engineer Intern",
+      start: { label: "Sep 2019", iso: "2019-09" },
+      end: { label: "Jun 2020", iso: "2020-06" },
+      text: "Built anomaly detection on real-time 5G telematics data using autoencoders on Amazon SageMaker.",
+    },
+  ],
 };
 
 export type Capability = { title: string; text: string; evidence: Link[] };

@@ -39,6 +39,13 @@ export function Contact() {
                   LinkedIn<span aria-hidden="true" className="ext-arrow">↗</span>
                 </a>
               </li>
+              {site.links.resume && (
+                <li>
+                  <a className="link" href={site.links.resume}>
+                    Résumé
+                  </a>
+                </li>
+              )}
               {contact.meta.map((m) => (
                 <li key={m}>{m}</li>
               ))}
