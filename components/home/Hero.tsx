@@ -1,14 +1,23 @@
 import { hero } from "@/content/site";
 import { Rich } from "../Rich";
 import { Container, Button, Label, TextLink } from "../ui";
+import { HeroGraph } from "../hero/HeroGraph";
 
 export function Hero() {
   return (
-    <section id="hero" aria-labelledby="hero-title" className="relative flex min-h-[92svh] flex-col justify-end pb-16 pt-28 md:pb-24">
-      {/* Stage 2 mounts the 3D workflow graph here (absolute, behind the text). */}
-      <div id="hero-graph-slot" aria-hidden="true" className="pointer-events-none absolute inset-0 -z-10" />
+    <section
+      id="hero"
+      aria-labelledby="hero-title"
+      className="relative isolate flex min-h-[92svh] flex-col justify-end overflow-hidden pb-16 pt-[calc(22svh+5.5rem)] md:pb-24 md:pt-28"
+    >
+      <HeroGraph />
+      {/* Scrim: keeps the headline at full contrast over the graph. */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 hidden bg-[linear-gradient(to_top,var(--color-ink-950)_18%,rgb(10_10_11/0.85)_42%,rgb(10_10_11/0)_68%)] md:block"
+      />
 
-      <Container>
+      <Container className="relative">
         <div className="grid grid-cols-1 gap-x-6 md:grid-cols-12">
           <div className="md:col-span-10 lg:col-span-9">
             <Label as="p">{hero.eyebrow}</Label>

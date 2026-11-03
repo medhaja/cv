@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { caseStudy as cs, caseStudySections, dashboardShot, seo, site } from "@/content/site";
 import { Rich } from "@/components/Rich";
-import { BrowserFrame, Button, Container, Coord, Label, TextLink } from "@/components/ui";
+import { Button, Container, Coord, Label, ShotPanel, TextLink } from "@/components/ui";
 import { SmartLink } from "@/components/SmartLink";
 import { CopyEmail } from "@/components/CopyEmail";
 
@@ -60,7 +60,7 @@ export default function IsoclineCaseStudy() {
           </div>
 
           <figure className="mt-14 md:mt-20">
-            <BrowserFrame shot={dashboardShot} priority />
+            <ShotPanel shot={dashboardShot} priority />
             <figcaption className="mt-4 max-w-[70ch] font-mono text-small text-fg-subtle">{cs.shotCaption}</figcaption>
           </figure>
         </Container>

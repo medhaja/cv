@@ -121,7 +121,7 @@ The principle is that motion explains state and never decorates. Everything move
 
 **Nodes.** Instanced spheres would look generic, so each node is a small **rounded square plate** (an instanced `RoundedBox` geometry, 0.28 units) seen slightly in 3/4 view. It reads like a component in a builder canvas.
 - *Pending* nodes are an `ink-850` fill with a `line-strong` edge.
-- *Completed* nodes are `fg` at 60% with no glow.
+- *Completed* nodes are a dark `#2a2a2e` fill with an `fg`-60% outline and no glow. *(Revised in Stage 2: a 60% `fg` fill made completed plates read as heavy grey blocks.)*
 - *Running* nodes are `signal`, with a small additive bloom sprite at 0.35 opacity.
 - *Awaiting approval* nodes have a `signal` edge and a hollow fill. The halo breathes at 0.5Hz. A mono tag `awaiting approval · 00:00:03` ticks next to the node, then the node turns *running*.
 
@@ -131,7 +131,7 @@ The principle is that motion explains state and never decorates. Everything move
 1. A single `signal` pulse, a short comet with a 0.12-unit tail, travels each edge in ~450ms using `ease-in-out`.
 2. At the parallel node the pulse **splits into three** and the branches finish at slightly different times. The merge node waits until all three arrive, with a visible "2/3 → 3/3" tick.
 3. At the approval node, the run **pauses** for ~1.8s with the breathing halo, then resumes.
-4. The retry node gets one dashed "failed" flash, then a second pulse succeeds. This is the only failure shown.
+4. The retry node fails once: its outline flashes `fg` with a mono tag `attempt 1 failed · retrying`, then a second attempt succeeds. This is the only failure shown. *(Implemented as a tag, not a dashed stroke, which instanced meshes can't draw per node.)* The only dashed element is the router's skipped branch.
 5. When the run completes, all nodes settle to *completed*, a mono `run_7f3a… completed · 16/16 nodes` line appears in the hero corner, and the run restarts with a new run ID.
 
 **Texture overlay (DOM, not WebGL).**
@@ -143,6 +143,13 @@ The principle is that motion explains state and never decorates. Everything move
 - *Cursor parallax:* the camera offsets by up to ±0.3 units, damped at 0.08.
 - *Hover:* the node's edge brightens and a mono label appears (`agent`, `router`, `approval`, `retry`, `merge`, …) with its type.
 - *Scroll:* across the first 100vh the camera dollies back from z = 6 to z = 11, the graph's opacity eases to 35%, and it shifts right. It ends up as a calm backdrop behind the headline, which keeps its full contrast on a `ink-950` → transparent scrim.
+
+**Implementation notes (Stage 2)**
+- Labels and tags are DOM overlays positioned by projecting world points each frame. drei is not used, which keeps it out of the bundle.
+- Hover is a per-frame raycast against the instanced plates, using a window pointer listener (the canvas takes no pointer events).
+- Tone mapping is off (`flat`), so the palette renders exactly (`#FFB547` measures 254/181/71).
+- The camera sits at z = 22 (fov 34°) and dollies to z = 32 on scroll. The graph sits in the top band, right of centre, clear of the headline. The scroll fade is a CSS opacity on the wrapper, so it applies to the SVG too.
+- The static SVG uses the same projection maths as the camera, so the crossfade is seamless on desktop. Mobile uses a viewBox fitted to the graph.
 
 **Performance contract**
 - The canvas is loaded with `next/dynamic` (`ssr:false`) after first paint.

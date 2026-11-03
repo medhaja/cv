@@ -369,3 +369,20 @@
     animation-iteration-count: 1 !important;
   }
 }
+
+/* Static graph: approval halo breathes at 0.5 Hz (disabled under reduced motion). */
+@keyframes halo-breathe {
+  0%, 100% { opacity: 0.35; }
+  50% { opacity: 0.85; }
+}
+.graph-halo {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: halo-breathe 2s ease-in-out infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .graph-halo {
+    animation: none;
+    opacity: 0.6;
+  }
+}

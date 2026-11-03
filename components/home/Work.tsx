@@ -1,11 +1,41 @@
 import { dashboardShot, earlierWork, isocline, work } from "@/content/site";
 import { Rich } from "../Rich";
-import { BrowserFrame, Button, Label, Section, Tag, TextLink } from "../ui";
+import { Button, Label, Section, ShotPanel, Tag, TextLink } from "../ui";
 import { SmartLink } from "../SmartLink";
 
 export function Work() {
   return (
-    <Section id="work" index="02" path="/work" label={work.label} title={work.title}>
+    <Section
+      id="work"
+      index="02"
+      path="/work"
+      label={work.label}
+      aside={
+        <ul className="mt-6 hidden flex-col items-start gap-2 md:flex">
+          {isocline.tags.map((t) => (
+            <li key={t}>
+              <Tag>{t}</Tag>
+            </li>
+          ))}
+        </ul>
+      }
+      head={
+        <div id="isocline" className="scroll-mt-24">
+          <p className="label">{work.title}</p>
+          <h2 id="isocline-title" className="mt-4 font-display text-display-xl">
+            {isocline.name}
+          </h2>
+          <p className="mt-6 max-w-[52ch] text-lead text-fg-muted">{isocline.tagline}</p>
+          <ul className="mt-6 flex flex-wrap gap-2 md:hidden">
+            {isocline.tags.map((t) => (
+              <li key={t}>
+                <Tag>{t}</Tag>
+              </li>
+            ))}
+          </ul>
+        </div>
+      }
+    >
       <Isocline />
       <EarlierWork />
     </Section>
@@ -15,29 +45,10 @@ export function Work() {
 function Isocline() {
   const [caseStudy, repo, ...textLinks] = isocline.links;
   return (
-    <article id="isocline" aria-labelledby="isocline-title" className="scroll-mt-24">
-      {/* Title block */}
-      <div className="grid grid-cols-1 gap-x-6 gap-y-6 md:grid-cols-12">
-        <div className="md:col-span-3">
-          <ul className="flex flex-wrap gap-2 md:flex-col md:items-start">
-            {isocline.tags.map((t) => (
-              <li key={t}>
-                <Tag>{t}</Tag>
-              </li>
-            ))}
-          </ul>
-        </div>
-        <div className="md:col-span-9">
-          <h3 id="isocline-title" className="font-display text-display-md">
-            {isocline.name}
-          </h3>
-          <p className="mt-4 max-w-[52ch] text-lead text-fg-muted">{isocline.tagline}</p>
-        </div>
-      </div>
-
+    <div>
       {/* Screenshot */}
-      <figure className="mt-12 md:mt-16">
-        <BrowserFrame shot={dashboardShot} />
+      <figure>
+        <ShotPanel shot={dashboardShot} />
       </figure>
 
       {/* Proof tiles */}
@@ -76,8 +87,9 @@ function Isocline() {
             <li key={title} className="flex flex-col gap-3 border-b border-r border-line p-6">
               <span className="font-mono text-label text-fg-subtle">{String(i + 1).padStart(2, "0")}</span>
               <p className="text-small text-fg-muted">
-                <strong className="block text-body text-fg">{title.replace(/:$/, "")}</strong>
-                {rest.replace(/^,\s*/, "")}
+                <strong className="text-fg">{title}</strong>
+                {rest.startsWith(",") ? "" : " "}
+                {rest}
               </p>
             </li>
           ))}
@@ -105,7 +117,7 @@ function Isocline() {
           <TextLink key={l.href} link={l} className="text-small" />
         ))}
       </div>
-    </article>
+    </div>
   );
 }
 
@@ -117,9 +129,9 @@ function EarlierWork() {
           {earlierWork.label}
         </Label>
         <div className="md:col-span-9">
-          <h3 id="earlier-title" className="font-display text-display-md">
+          <h2 id="earlier-title" className="font-display text-display-md">
             {earlierWork.title}
-          </h3>
+          </h2>
           <p className="mt-4 max-w-[60ch] text-fg-muted">{earlierWork.note}</p>
         </div>
       </div>
@@ -132,9 +144,9 @@ function EarlierWork() {
                 {p.year} · {p.category}
               </Tag>
             </p>
-            <h4 id={`${p.id}-title`} className="mt-5 text-heading font-medium">
+            <h3 id={`${p.id}-title`} className="mt-5 text-heading font-medium">
               {p.title}
-            </h4>
+            </h3>
             <dl className="mt-6 flex flex-col gap-5 text-small">
               {p.rows.map((r) => (
                 <div key={r.label}>

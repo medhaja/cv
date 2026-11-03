@@ -44,6 +44,7 @@ export function Section({
   children,
   titleId,
   aside,
+  head,
 }: {
   id: string;
   index: string;
@@ -53,15 +54,19 @@ export function Section({
   titleId?: string;
   children: ReactNode;
   aside?: ReactNode;
+  /** Replaces the h2 slot (content column) when a section needs a custom heading block. */
+  head?: ReactNode;
 }) {
   const tid = titleId ?? `${id}-title`;
   return (
-    <section id={id} aria-labelledby={title ? tid : undefined} className="section">
+    <section id={id} aria-labelledby={title ? tid : `${id}-label`} className="section">
       <Container>
         <Coord index={index} path={path} />
         <div className="grid grid-cols-1 gap-x-6 gap-y-6 md:grid-cols-12">
           <div className="md:col-span-3">
-            <Label as="p">{label}</Label>
+            <p id={`${id}-label`} className="label">
+              {label}
+            </p>
             {aside}
           </div>
           {title && (
@@ -69,10 +74,20 @@ export function Section({
               {title}
             </h2>
           )}
+          {head && <div className="md:col-span-9">{head}</div>}
         </div>
         <div className="mt-12 md:mt-16">{children}</div>
       </Container>
     </section>
+  );
+}
+
+/** Dashboard screenshot: browser frame on an ink-850 panel. No CSS filters on the image. */
+export function ShotPanel(props: Parameters<typeof BrowserFrame>[0]) {
+  return (
+    <div className="rounded-md border border-line bg-ink-850 p-3 sm:p-6 lg:p-12">
+      <BrowserFrame {...props} />
+    </div>
   );
 }
 

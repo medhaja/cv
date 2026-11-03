@@ -1,0 +1,144 @@
+"use client";
+
+import dynamic from "next/dynamic";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { GraphStatic } from "./GraphStatic";
+import { VIEW } from "./graph-data";
+import type { OverlayRefs } from "./GraphScene";
+
+// The WebGL scene (three + R3F) is a separate chunk, fetched only when the 3D mode is chosen.
+const GraphScene = dynamic(() => import("./GraphScene"), { ssr: false });
+
+type Mode = "static" | "3d";
+
+/** Static unless: fine pointer, ≥768px, no reduced motion, >4 cores, WebGL available. */
+function canRun3D() {
+  const mm = (q: string) => window.matchMedia(q).matches;
+  if (mm("(prefers-reduced-motion: reduce)")) return false;
+  if (!mm("(pointer: fine)") || window.innerWidth < 768) return false;
+  if ((navigator.hardwareConcurrency ?? 8) <= 4) return false;
+  try {
+    const c = document.createElement("canvas");
+    return !!(c.getContext("webgl2") || c.getContext("webgl"));
+  } catch {
+    return false;
+  }
+}
+
+type LogLine = { id: number; t: number; text: string };
+
+export function HeroGraph() {
+  const wrap = useRef<HTMLDivElement>(null);
+  const [mode, setMode] = useState<Mode>("static");
+  const [ready, setReady] = useState(false);
+  const [visible, setVisible] = useState(true);
+  const [log, setLog] = useState<LogLine[]>([]);
+  const overlay = useRef<OverlayRefs>({ hover: null, edgeLabels: [], approval: null, merge: null, retry: null, readout: null });
+  const seq = useRef(0);
+
+  // Choose mode after first paint, when the main thread is idle. Re-check if reduced motion is toggled.
+  useEffect(() => {
+    const decide = () => {
+      const ok = canRun3D();
+      setMode(ok ? "3d" : "static");
+      if (!ok) setReady(false);
+    };
+    const ric = window.requestIdleCallback ?? ((cb: () => void) => window.setTimeout(cb, 200));
+    const handle = ric(decide);
+    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+    mq.addEventListener("change", decide);
+    return () => {
+      if (window.cancelIdleCallback) window.cancelIdleCallback(handle as number);
+      else window.clearTimeout(handle as number);
+      mq.removeEventListener("change", decide);
+    };
+  }, []);
+
+  // Pause rendering when the hero is off-screen.
+  useEffect(() => {
+    const el = wrap.current;
+    if (!el) return;
+    const io = new IntersectionObserver(([e]) => setVisible(e.isIntersecting), { rootMargin: "80px" });
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+
+  // Scroll: graph settles behind the headline (fades to 35%). Applies to SVG and canvas alike.
+  useEffect(() => {
+    const el = wrap.current;
+    if (!el || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    let raf = 0;
+    const onScroll = () => {
+      cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(() => {
+        const p = Math.min(1, Math.max(0, window.scrollY / window.innerHeight));
+        el.style.opacity = String(1 - (1 - VIEW.scrollOpacity) * p);
+      });
+    };
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => {
+      cancelAnimationFrame(raf);
+      window.removeEventListener("scroll", onScroll);
+    };
+  }, []);
+
+  const onReady = useCallback(() => setReady(true), []);
+  const onLog = useCallback((text: string, t: number) => {
+    setLog((prev) => [...prev.slice(-2), { id: seq.current++, t, text }]);
+  }, []);
+
+  const show3d = mode === "3d";
+
+  return (
+    <div ref={wrap} className="hero-graph pointer-events-none absolute inset-0" aria-hidden="true">
+      {/* Static SVG: SSR placeholder + fallback. Cross-fades out once WebGL has drawn. */}
+      <div className={`absolute inset-0 transition-opacity duration-300 ${ready && show3d ? "opacity-0" : "opacity-100"}`}>
+        <div className="absolute inset-x-0 top-[4.25rem] h-[22svh] px-5 md:hidden">
+          <GraphStatic variant="fit" />
+        </div>
+        <div className="absolute inset-0 hidden md:block">
+          <GraphStatic variant="camera" />
+        </div>
+      </div>
+
+      {show3d && (
+        <>
+          <GraphScene overlay={overlay} active={visible} onReady={onReady} onLog={onLog} />
+
+          {/* Overlays positioned by the scene (transform written per frame). */}
+          <div className={`absolute inset-0 overflow-hidden font-mono text-[11px] leading-none transition-opacity duration-300 ${ready ? "opacity-100" : "opacity-0"}`}>
+            <Tag refFn={(el) => (overlay.current.approval = el)} className="text-signal" />
+            <Tag refFn={(el) => (overlay.current.merge = el)} className="text-fg-subtle" />
+            <Tag refFn={(el) => (overlay.current.retry = el)} className="text-fg" />
+            {[0, 1, 2, 3, 4].map((i) => (
+              <Tag key={i} refFn={(el) => (overlay.current.edgeLabels[i] = el)} className="-translate-x-1/2 rounded-xs bg-ink-950/80 px-1.5 py-1 text-fg-subtle" />
+            ))}
+            {/* Hover label last: always above port labels. */}
+            <Tag refFn={(el) => (overlay.current.hover = el)} className="z-10 -translate-x-1/2 rounded-xs border border-line-strong bg-ink-900 px-2 py-1.5 text-fg" />
+
+            {/* Run log + readout (illustrative, not metrics), aligned to the content frame */}
+            <div className="absolute inset-x-0 top-20">
+              <div className="mx-auto flex w-full max-w-site items-start justify-between px-5 md:px-10">
+                <ol className="flex flex-col gap-1.5 text-fg-subtle">
+                  {log.map((l, i) => (
+                    <li key={l.id} style={{ opacity: 0.45 + 0.275 * (i + 3 - log.length) }}>
+                      <span className="tabular mr-3 text-fg-subtle/70">+{l.t.toFixed(3).padStart(6, "0")}</span>
+                      <span className={l.text.startsWith("run.completed") ? "text-fg" : ""}>{l.text}</span>
+                    </li>
+                  ))}
+                </ol>
+                <span ref={(el) => void (overlay.current.readout = el)} className="text-right text-fg-subtle" />
+              </div>
+            </div>
+          </div>
+        </>
+      )}
+    </div>
+  );
+}
+
+/** Overlay label. The scene writes `transform` (position) and text; centring uses the separate `translate` property. */
+function Tag({ refFn, className = "" }: { refFn: (el: HTMLDivElement | null) => void; className?: string }) {
+  return <div ref={refFn} className={`absolute left-0 top-0 whitespace-pre opacity-0 transition-opacity duration-200 will-change-transform ${className}`} />;
+}

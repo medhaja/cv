@@ -7,19 +7,23 @@
     "build": "next build",
     "start": "npx serve out",
     "lint": "tsc --noEmit",
-    "content:diff": "node scripts/content-diff.mjs"
+    "content:diff": "node scripts/content-diff.mjs",
+    "postbuild": "node scripts/flatten-rsc.mjs"
   },
   "dependencies": {
+    "@react-three/fiber": "^9.8.2",
     "geist": "^1.9.0",
     "next": "^16.4.4",
     "react": "^19.3.1",
-    "react-dom": "^19.3.1"
+    "react-dom": "^19.3.1",
+    "three": "^0.187.0"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.3.3",
     "@types/node": "^26.6.6",
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
+    "@types/three": "^0.187.0",
     "postcss": "^8.5.32",
     "tailwindcss": "^4.3.3",
     "typescript": "^7.0.2"
