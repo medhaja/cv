@@ -29,6 +29,8 @@ type LogLine = { id: number; t: number; text: string };
 
 export function HeroGraph() {
   const wrap = useRef<HTMLDivElement>(null);
+  const regionWrap = useRef<HTMLDivElement>(null);
+  const region = useRef<HTMLDivElement>(null);
   const [mode, setMode] = useState<Mode>("static");
   const [ready, setReady] = useState(false);
   const [visible, setVisible] = useState(true);
@@ -65,14 +67,14 @@ export function HeroGraph() {
 
   // Scroll: graph settles behind the headline (fades to 35%). Applies to SVG and canvas alike.
   useEffect(() => {
-    const el = wrap.current;
-    if (!el || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const els = [wrap.current, regionWrap.current].filter(Boolean) as HTMLElement[];
+    if (!els.length || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     let raf = 0;
     const onScroll = () => {
       cancelAnimationFrame(raf);
       raf = requestAnimationFrame(() => {
         const p = Math.min(1, Math.max(0, window.scrollY / window.innerHeight));
-        el.style.opacity = String(1 - (1 - VIEW.scrollOpacity) * p);
+        for (const el of els) el.style.opacity = String(1 - (1 - VIEW.scrollOpacity) * p);
       });
     };
     onScroll();
@@ -91,50 +93,51 @@ export function HeroGraph() {
   const show3d = mode === "3d";
 
   return (
-    <div ref={wrap} className="hero-graph pointer-events-none absolute inset-0" aria-hidden="true">
-      {/* Static SVG: SSR placeholder + fallback. Cross-fades out once WebGL has drawn. */}
-      <div className={`absolute inset-0 transition-opacity duration-300 ${ready && show3d ? "opacity-0" : "opacity-100"}`}>
-        <div className="absolute inset-x-0 top-[4.25rem] h-[22svh] px-5 md:hidden">
-          <GraphStatic variant="fit" />
-        </div>
-        <div className="absolute inset-0 hidden md:block">
-          <GraphStatic variant="camera" />
-        </div>
+    <>
+      {/* Full-hero layer: the canvas may draw anywhere (scroll settles it behind the headline). */}
+      <div ref={wrap} className="hero-graph pointer-events-none absolute inset-0 -z-10" aria-hidden="true">
+        {show3d && (
+          <>
+            <GraphScene overlay={overlay} region={region} active={visible} onReady={onReady} onLog={onLog} />
+            {/* Overlays positioned by the scene (transform written per frame). */}
+            <div className={`absolute inset-0 overflow-hidden font-mono text-[11px] leading-none transition-opacity duration-300 ${ready ? "opacity-100" : "opacity-0"}`}>
+              <Tag refFn={(el) => (overlay.current.approval = el)} className="text-signal" />
+              <Tag refFn={(el) => (overlay.current.merge = el)} className="text-fg-subtle" />
+              <Tag refFn={(el) => (overlay.current.retry = el)} className="text-fg" />
+              {[0, 1, 2, 3, 4].map((i) => (
+                <Tag key={i} refFn={(el) => (overlay.current.edgeLabels[i] = el)} className="-translate-x-1/2 rounded-xs bg-ink-950/80 px-1.5 py-1 text-fg-subtle" />
+              ))}
+              {/* Hover label last: always above port labels. */}
+              <Tag refFn={(el) => (overlay.current.hover = el)} className="z-10 -translate-x-1/2 rounded-xs border border-line-strong bg-ink-900 px-2 py-1.5 text-fg" />
+            </div>
+          </>
+        )}
       </div>
 
-      {show3d && (
-        <>
-          <GraphScene overlay={overlay} active={visible} onReady={onReady} onLog={onLog} />
-
-          {/* Overlays positioned by the scene (transform written per frame). */}
-          <div className={`absolute inset-0 overflow-hidden font-mono text-[11px] leading-none transition-opacity duration-300 ${ready ? "opacity-100" : "opacity-0"}`}>
-            <Tag refFn={(el) => (overlay.current.approval = el)} className="text-signal" />
-            <Tag refFn={(el) => (overlay.current.merge = el)} className="text-fg-subtle" />
-            <Tag refFn={(el) => (overlay.current.retry = el)} className="text-fg" />
-            {[0, 1, 2, 3, 4].map((i) => (
-              <Tag key={i} refFn={(el) => (overlay.current.edgeLabels[i] = el)} className="-translate-x-1/2 rounded-xs bg-ink-950/80 px-1.5 py-1 text-fg-subtle" />
+      {/* Graph region (in flow, above the text): the graph is framed to fit here, so it never sits under the copy. */}
+      <div ref={regionWrap} className="pointer-events-none mx-auto mb-6 flex w-full max-w-site flex-1 flex-col px-5 md:mb-14 md:px-10 [@media(max-height:820px)]:md:mb-8" aria-hidden="true">
+        {/* Run log + readout row (illustrative, not metrics) */}
+        <div className="hidden h-14 items-start justify-between font-mono text-[11px] leading-none text-fg-subtle md:flex [@media(max-height:820px)]:h-12">
+          <ol className={`flex flex-col gap-1.5 transition-opacity duration-300 ${show3d && ready ? "opacity-100" : "opacity-0"}`}>
+            {log.map((l, i) => (
+              <li key={l.id} style={{ opacity: 0.45 + 0.275 * (i + 3 - log.length) }}>
+                <span className="tabular mr-3 text-fg-subtle/70">+{l.t.toFixed(3).padStart(6, "0")}</span>
+                <span className={l.text.startsWith("run.completed") ? "text-fg" : ""}>{l.text}</span>
+              </li>
             ))}
-            {/* Hover label last: always above port labels. */}
-            <Tag refFn={(el) => (overlay.current.hover = el)} className="z-10 -translate-x-1/2 rounded-xs border border-line-strong bg-ink-900 px-2 py-1.5 text-fg" />
+          </ol>
+          <span ref={(el) => void (overlay.current.readout = el)} className="text-right" />
+        </div>
 
-            {/* Run log + readout (illustrative, not metrics), aligned to the content frame */}
-            <div className="absolute inset-x-0 top-20">
-              <div className="mx-auto flex w-full max-w-site items-start justify-between px-5 md:px-10">
-                <ol className="flex flex-col gap-1.5 text-fg-subtle">
-                  {log.map((l, i) => (
-                    <li key={l.id} style={{ opacity: 0.45 + 0.275 * (i + 3 - log.length) }}>
-                      <span className="tabular mr-3 text-fg-subtle/70">+{l.t.toFixed(3).padStart(6, "0")}</span>
-                      <span className={l.text.startsWith("run.completed") ? "text-fg" : ""}>{l.text}</span>
-                    </li>
-                  ))}
-                </ol>
-                <span ref={(el) => void (overlay.current.readout = el)} className="text-right text-fg-subtle" />
-              </div>
-            </div>
+        <div ref={region} className="relative min-h-[120px] flex-1 md:min-h-[clamp(170px,26svh,320px)] md:ml-[calc(25%+18px)] [@media(max-height:820px)]:min-h-[140px]">
+          {/* Static SVG: SSR placeholder + fallback. Cross-fades out once WebGL has drawn. */}
+          <div className={`absolute inset-0 transition-opacity duration-300 ${ready && show3d ? "opacity-0" : "opacity-100"}`}>
+            <GraphStatic size="narrow" className="md:hidden" />
+            <GraphStatic size="wide" className="hidden md:block" />
           </div>
-        </>
-      )}
-    </div>
+        </div>
+      </div>
+    </>
   );
 }
 

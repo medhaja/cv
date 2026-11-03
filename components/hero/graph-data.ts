@@ -203,15 +203,14 @@ export const newRunId = () => "run_" + Math.random().toString(16).slice(2, 8);
 
 export const VIEW = {
   fov: 34, // vertical, degrees
+  /** Reference camera distance for the static SVG's perspective. WebGL computes its own to fit the region. */
   camZ: 22,
-  /** World offset applied to the graph group: the top band, right of centre, clear of the headline. */
-  offset: [1.8, 3.55, 0] as [number, number, number],
+  offset: [0, 0, 0] as [number, number, number],
   /** Rounded plate size (world units). */
   plate: 0.46,
   plateDepth: 0.1,
-  /** Scroll choreography over the first viewport: dolly back, drift right. */
-  scrollCamZ: 32,
-  scrollShiftX: 2.2,
+  /** Scroll choreography over the first viewport: dolly back (× camera distance), fade. */
+  scrollDolly: 0.45,
   scrollOpacity: 0.35,
 };
 
@@ -233,6 +232,21 @@ export function project(p: readonly number[]): [number, number, number] {
 /* ------------------------------------------------------------------ */
 /* Static frame (SVG fallback): mid-run, approval waiting               */
 /* ------------------------------------------------------------------ */
+
+/** World-space bounds of the graph (plates included), used to fit it into the hero's graph region. */
+export const BOUNDS = (() => {
+  const pad = VIEW.plate;
+  const xs = NODES.map((n) => n.pos[0]);
+  const ys = NODES.map((n) => n.pos[1]);
+  const minX = Math.min(...xs) - pad,
+    maxX = Math.max(...xs) + pad,
+    minY = Math.min(...ys) - pad,
+    maxY = Math.max(...ys) + pad;
+  return { cx: (minX + maxX) / 2, cy: (minY + maxY) / 2, w: maxX - minX, h: maxY - minY };
+})();
+
+/** Fraction of the region the graph may fill (same for SVG and WebGL so they line up). */
+export const FIT = { w: 0.96, h: 0.86 };
 
 /** The moment the static SVG depicts: the run is paused on human approval. */
 export const STATIC_T = 5.6;

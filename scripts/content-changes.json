@@ -1,0 +1,42 @@
+{
+  "_comment": "Intentional differences from legacy/*.html, approved by the owner. content-diff.mjs fails on anything not listed here.",
+  "removed": {
+    "legacy/index.html": {
+      "Analyst / Data Scientist": "EXL title is \"Analyst\" only (owner, Nov 2026)",
+      "Lead delivery of GenAI applications.": "Experience bullets replaced with owner-supplied text (Nov 2026)",
+      "Work across architecture, implementation, evaluation and deployment.": "Experience bullets replaced with owner-supplied text (Nov 2026)",
+      "Guide engineers and collaborate with stakeholders.": "Experience bullets replaced with owner-supplied text (Nov 2026)",
+      "Current technical lead role": "Evidence line replaced: \"Technical lead at Biz-Metric\" (owner, Nov 2026)"
+    },
+    "legacy/isocline.html": {
+      "medhaja.me": "Case-study footer link replaced by the shared footer (GitHub, LinkedIn, Back to top)"
+    }
+  },
+  "added": {
+    "out/index.html": [
+      "Lead delivery of enterprise document-processing and knowledge-retrieval applications, owning the technical architecture and guiding engineers through implementation, evaluation and deployment.",
+      "Build document-processing agents and RAG pipelines, orchestrating multiple models with LangGraph and LiteLLM, including routing, failure handling and output-quality checks.",
+      "Deployed Mistral-7B with vLLM on Google Kubernetes Engine (GKE) for GPU-backed inference serving, and explored speculative decoding to improve serving performance.",
+      "Built FastAPI services and evaluation components for enterprise AI inference and evaluation systems, integrating LLM and OpenCV components into evaluation workflows.",
+      "Built a multi-agent proof of concept with AutoGen.",
+      "Built enterprise knowledge-retrieval (RAG) applications with FAISS and FastAPI, connecting document retrieval to LLM generation.",
+      "Integrated multiple model backends — OpenAI, Mistral, Llama 2 and Amazon Bedrock — into these applications.",
+      "Developed NLP question-answering solutions and PySpark data-processing workflows, and worked on Docker and Kubernetes deployments.",
+      "Analyst",
+      "5+",
+      "years industry experience",
+      "vLLM on GKE at Infinite Computer Solutions",
+      "Technical lead at Biz-Metric",
+      "Isocline’s product scope",
+      "RAG and agent work at Biz-Metric and SourceFuse",
+      "Harvard Business School Online · Certificate Program · 2022",
+      "A research workflow runs specialist agents in parallel, merges their outputs, and pauses for human approval before generating a report.",
+      "This is demonstrated functionality, not a customer deployment."
+    ],
+    "out/isocline/index.html": [
+      "Demonstrated workflow",
+      "A research workflow runs specialist agents in parallel, merges their outputs, and pauses for human approval before generating a report. The run inspector shows each node’s output, token usage, latency and estimated cost.",
+      "This is demonstrated functionality, not a customer deployment."
+    ]
+  }
+}

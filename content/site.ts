@@ -135,6 +135,12 @@ export const isocline = {
       text: "I created Isocline and develop it: architecture, runtime, web builder, SDK and CLI, desktop packaging, and release verification.",
     },
   ] satisfies Fact[],
+  /** One-line version of the case study's "Demonstrated workflow" (first sentence, verbatim). */
+  demonstrated: {
+    label: "Demonstrated workflow",
+    text: "A research workflow runs specialist agents in parallel, merges their outputs, and pauses for human approval before generating a report.",
+    note: "This is demonstrated functionality, not a customer deployment.",
+  },
   capabilitiesLabel: "What it does today",
   /** `[title, rest]`: rendered as a feature grid. Title + rest joined = original sentence. */
   capabilities: [
@@ -238,6 +244,7 @@ export const experience = {
   title: "Where I’ve worked",
   /** Added at the owner's request (Jun 2021 – present, minus a gap ≈ 5y2m). */
   stat: { value: "5+", label: "years industry experience" },
+  /** Owner-supplied bullets (Nov 2026). Generic client descriptions only: no client names, data or prompts. */
   roles: [
     {
       title: "GenAI Technical Lead",
@@ -246,9 +253,8 @@ export const experience = {
       end: null,
       current: true,
       bullets: [
-        "Lead delivery of GenAI applications.",
-        "Work across architecture, implementation, evaluation and deployment.",
-        "Guide engineers and collaborate with stakeholders.",
+        "Lead delivery of enterprise document-processing and knowledge-retrieval applications, owning the technical architecture and guiding engineers through implementation, evaluation and deployment.",
+        "Build document-processing agents and RAG pipelines, orchestrating multiple models with LangGraph and LiteLLM, including routing, failure handling and output-quality checks.",
       ],
     },
     {
@@ -256,18 +262,30 @@ export const experience = {
       org: "Infinite Computer Solutions",
       start: { label: "Oct 2024", iso: "2024-10" },
       end: { label: "Feb 2026", iso: "2026-02" },
+      bullets: [
+        "Deployed Mistral-7B with vLLM on Google Kubernetes Engine (GKE) for GPU-backed inference serving, and explored speculative decoding to improve serving performance.",
+        "Built FastAPI services and evaluation components for enterprise AI inference and evaluation systems, integrating LLM and OpenCV components into evaluation workflows.",
+        "Built a multi-agent proof of concept with AutoGen.",
+      ],
     },
     {
       title: "Software Engineer, AI/ML",
       org: "SourceFuse",
       start: { label: "Apr 2023", iso: "2023-04" },
       end: { label: "Oct 2024", iso: "2024-10" },
+      bullets: [
+        "Built enterprise knowledge-retrieval (RAG) applications with FAISS and FastAPI, connecting document retrieval to LLM generation.",
+        "Integrated multiple model backends — OpenAI, Mistral, Llama 2 and Amazon Bedrock — into these applications.",
+      ],
     },
     {
-      title: "Analyst / Data Scientist",
+      title: "Analyst",
       org: "EXL",
       start: { label: "Jun 2021", iso: "2021-06" },
       end: { label: "Dec 2022", iso: "2022-12" },
+      bullets: [
+        "Developed NLP question-answering solutions and PySpark data-processing workflows, and worked on Docker and Kubernetes deployments.",
+      ],
     },
   ] satisfies Role[],
 };
@@ -284,6 +302,7 @@ export const capabilities = {
       evidence: [
         { label: "Isocline", href: "/isocline/" },
         { label: "RAG evaluation with MLflow", href: "/#p-genai-mlflow" },
+        { label: "RAG and agent work at Biz-Metric and SourceFuse", href: "/#experience" },
       ],
     },
     {
@@ -294,7 +313,10 @@ export const capabilities = {
     {
       title: "Inference and deployment",
       text: "vLLM, Docker, Kubernetes, cloud deployment.",
-      evidence: [{ label: "Isocline’s Docker Compose stack and sandbox", href: "/isocline/#architecture" }],
+      evidence: [
+        { label: "vLLM on GKE at Infinite Computer Solutions", href: "/#experience" },
+        { label: "Isocline’s Docker Compose stack and sandbox", href: "/isocline/#architecture" },
+      ],
     },
     {
       title: "Reliability",
@@ -304,7 +326,10 @@ export const capabilities = {
     {
       title: "Product and leadership",
       text: "Problem definition, prototyping, technical design, delivery, mentoring.",
-      evidence: [{ label: "Current technical lead role", href: "/#experience" }],
+      evidence: [
+        { label: "Technical lead at Biz-Metric", href: "/#experience" },
+        { label: "Isocline’s product scope", href: "/isocline/#ownership" },
+      ],
     },
   ] satisfies Capability[],
 };
@@ -358,6 +383,7 @@ export const background = {
     {
       title: "Sustainable Business Strategy",
       issuer: "Harvard Business School Online · Certificate Program",
+      year: "2022",
       link: { label: "View certificate", srLabel: " for Sustainable Business Strategy", href: "/img/HBS.jpg" },
     },
     {
@@ -442,6 +468,13 @@ export const caseStudy = {
       "**Developer surface:** REST API with OpenAPI, a Python SDK and a CLI.",
       "**Desktop app:** a single-process Windows build using SQLite and in-process workers, with Python steps sandboxed in a Windows AppContainer.",
     ],
+  },
+
+  /** Shown after "What I built" (not a numbered section). Owner-supplied text. */
+  demonstrated: {
+    title: "Demonstrated workflow",
+    text: "A research workflow runs specialist agents in parallel, merges their outputs, and pauses for human approval before generating a report. The run inspector shows each node’s output, token usage, latency and estimated cost.",
+    note: "This is demonstrated functionality, not a customer deployment.",
   },
 
   ownership: {

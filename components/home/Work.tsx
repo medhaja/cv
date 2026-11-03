@@ -77,6 +77,15 @@ function Isocline() {
         ))}
       </dl>
 
+      {/* Demonstrated workflow (one line; full version in the case study) */}
+      <div className="mt-16 grid grid-cols-1 gap-x-6 gap-y-3 border-y border-line py-8 md:mt-20 md:grid-cols-12">
+        <p className="label md:col-span-3">{isocline.demonstrated.label}</p>
+        <div className="md:col-span-9">
+          <p className="max-w-[64ch] text-lead text-fg">{isocline.demonstrated.text}</p>
+          <p className="mt-3 font-mono text-small text-fg-subtle">{isocline.demonstrated.note}</p>
+        </div>
+      </div>
+
       {/* Feature grid */}
       <div className="mt-16 md:mt-24">
         <Label as="h3" className="block">

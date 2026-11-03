@@ -109,6 +109,15 @@ export default function IsoclineCaseStudy() {
                   </li>
                 ))}
               </ul>
+
+              <div id="demonstrated" className="mt-12 scroll-mt-24 rounded-md border border-line bg-ink-900 p-6 md:p-8">
+                <h3 className="text-heading font-medium">{cs.demonstrated.title}</h3>
+                <p className="mt-4 max-w-[64ch] text-fg-muted">{cs.demonstrated.text}</p>
+                <p className="mt-5 flex items-start gap-3 border-t border-line pt-5 font-mono text-small text-fg-subtle">
+                  <span aria-hidden="true">—</span>
+                  {cs.demonstrated.note}
+                </p>
+              </div>
             </CsSection>
 
             <CsSection {...cs.ownership}>

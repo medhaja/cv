@@ -17,17 +17,23 @@ export function Capabilities() {
             <span className="font-mono text-label text-fg-subtle">{String(i + 1).padStart(2, "0")}</span>
             <h3 className="mt-6 text-heading font-medium">{c.title}</h3>
             <p className="mb-8 mt-3 text-fg-muted">{c.text}</p>
-            <p className="mt-auto border-t border-line pt-5 font-mono text-[0.8125rem] leading-relaxed text-fg-subtle">
-              Evidence:{" "}
-              {c.evidence.map((e, j) => (
-                <span key={e.href}>
-                  {j > 0 && " · "}
-                  <SmartLink href={e.href} className="link !text-fg-muted hover:!text-fg">
-                    {e.label}
-                  </SmartLink>
-                </span>
-              ))}
-            </p>
+            <div className="mt-auto border-t border-line pt-5">
+              <p className="label" id={`cap-${i}-evidence`}>
+                Evidence:
+              </p>
+              <ul aria-labelledby={`cap-${i}-evidence`} className="mt-3 flex flex-col gap-2 text-small">
+                {c.evidence.map((e) => (
+                  <li key={e.label} className="flex gap-2">
+                    <span aria-hidden="true" className="font-mono text-fg-subtle">
+                      →
+                    </span>
+                    <SmartLink href={e.href} className="link !text-fg-muted hover:!text-fg">
+                      {e.label}
+                    </SmartLink>
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
         ))}
       </div>

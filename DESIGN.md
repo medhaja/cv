@@ -148,8 +148,9 @@ The principle is that motion explains state and never decorates. Everything move
 - Labels and tags are DOM overlays positioned by projecting world points each frame. drei is not used, which keeps it out of the bundle.
 - Hover is a per-frame raycast against the instanced plates, using a window pointer listener (the canvas takes no pointer events).
 - Tone mapping is off (`flat`), so the palette renders exactly (`#FFB547` measures 254/181/71).
-- The camera sits at z = 22 (fov 34°) and dollies to z = 32 on scroll. The graph sits in the top band, right of centre, clear of the headline. The scroll fade is a CSS opacity on the wrapper, so it applies to the SVG too.
-- The static SVG uses the same projection maths as the camera, so the crossfade is seamless on desktop. Mobile uses a viewBox fitted to the graph.
+- **Graph region (revised after the 1024px review).** The graph is framed into a real layout region above the eyebrow, in columns 4–12. The region is at least 170px tall (120px on mobile, 140px on viewports under 820px tall) and grows on tall screens. The camera distance and view offset are computed from the measured region, so the graph can never sit under the copy at any width. On scroll the camera dollies back (×1.45) and the view offset relaxes toward the hero centre, so the graph settles behind the headline as it fades to 35%. The scroll fade is CSS opacity, so it applies to the SVG too.
+- The headline uses all 12 columns below 1280px, so it holds two lines at 1024px.
+- The static SVG uses the same fitted bounds (`BOUNDS` / `FIT` in graph-data.ts) with `preserveAspectRatio="meet"`, so it frames exactly like the camera and the crossfade is seamless.
 
 **Performance contract**
 - The canvas is loaded with `next/dynamic` (`ssr:false`) after first paint.

@@ -8,18 +8,18 @@ export function Hero() {
     <section
       id="hero"
       aria-labelledby="hero-title"
-      className="relative isolate flex min-h-[92svh] flex-col justify-end overflow-hidden pb-16 pt-[calc(22svh+5.5rem)] md:pb-24 md:pt-28"
+      className="relative isolate flex min-h-[92svh] flex-col overflow-hidden pb-16 pt-8 md:pb-20 md:pt-10"
     >
       <HeroGraph />
       {/* Scrim: keeps the headline at full contrast over the graph. */}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-0 hidden bg-[linear-gradient(to_top,var(--color-ink-950)_18%,rgb(10_10_11/0.85)_42%,rgb(10_10_11/0)_68%)] md:block"
+        className="pointer-events-none absolute inset-0 -z-10 hidden bg-[linear-gradient(to_top,var(--color-ink-950)_30%,rgb(10_10_11/0.8)_55%,rgb(10_10_11/0)_75%)] md:block"
       />
 
       <Container className="relative">
         <div className="grid grid-cols-1 gap-x-6 md:grid-cols-12">
-          <div className="md:col-span-10 lg:col-span-9">
+          <div className="md:col-span-12 xl:col-span-10">
             <Label as="p">{hero.eyebrow}</Label>
             <h1 id="hero-title" className="mt-6 font-display text-display-xl text-balance">
               {hero.headline}

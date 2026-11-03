@@ -22,12 +22,29 @@ const pairs = [
   ["legacy/index.html", "out/index.html"],
   ["legacy/isocline.html", "out/isocline/index.html"],
 ];
-let missing = 0;
+const changes = JSON.parse(readFileSync("scripts/content-changes.json", "utf8"));
+let unexpected = 0;
 for (const [a, b] of pairs) {
   const newText = norm(text(readFileSync(b, "utf8")));
+  const allowed = changes.removed[a] ?? {};
   const lost = [...new Set(segments(readFileSync(a, "utf8")))].filter((s) => !newText.includes(s));
-  missing += lost.length;
-  console.log(`\n## ${a} → ${b}: ${lost.length} text node(s) not found verbatim`);
-  lost.forEach((s) => console.log("  - " + s));
+  const expected = lost.filter((s) => s in allowed);
+  const surprise = lost.filter((s) => !(s in allowed));
+  unexpected += surprise.length;
+  console.log(`
+## ${a} → ${b}`);
+  console.log(`  intentional removals/rewrites: ${expected.length}`);
+  expected.forEach((s) => console.log(`    ✓ "${s}" (${allowed[s]})`));
+  console.log(`  unexpected: ${surprise.length}`);
+  surprise.forEach((s) => console.log(`    ✗ "${s}"`));
 }
-process.exitCode = 0;
+for (const [file, list] of Object.entries(changes.added)) {
+  const t = norm(text(readFileSync(file, "utf8")));
+  const absent = list.filter((s) => !t.includes(s));
+  unexpected += absent.length;
+  console.log(`
+## owner-supplied additions in ${file}: ${list.length - absent.length}/${list.length} present verbatim`);
+  absent.forEach((s) => console.log(`    ✗ missing: "${s}"`));
+}
+console.log(unexpected ? `\nFAIL: ${unexpected} unexpected difference(s)` : "\nOK: only intentional changes");
+process.exitCode = unexpected ? 1 : 0;

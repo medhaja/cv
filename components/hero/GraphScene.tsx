@@ -12,7 +12,9 @@ import { useEffect, useMemo, useRef, type RefObject } from "react";
 import * as THREE from "three";
 import { RoundedBoxGeometry } from "three/examples/jsm/geometries/RoundedBoxGeometry.js";
 import {
+  BOUNDS,
   EDGES,
+  FIT,
   MERGE_FANIN,
   NODES,
   NODE_INDEX,
@@ -39,12 +41,14 @@ export type OverlayRefs = {
 
 type Props = {
   overlay: RefObject<OverlayRefs>;
+  /** The hero's graph region: the graph is framed to fit this box (see BOUNDS / FIT). */
+  region: RefObject<HTMLDivElement | null>;
   active: boolean;
   onReady: () => void;
   onLog: (line: string, t: number, runId: string) => void;
 };
 
-export default function GraphScene({ overlay, active, onReady, onLog }: Props) {
+export default function GraphScene({ overlay, region, active, onReady, onLog }: Props) {
   return (
     <Canvas
       flat
@@ -55,7 +59,7 @@ export default function GraphScene({ overlay, active, onReady, onLog }: Props) {
       style={{ position: "absolute", inset: 0, pointerEvents: "none" }}
       aria-hidden="true"
     >
-      <Graph overlay={overlay} onReady={onReady} onLog={onLog} />
+      <Graph overlay={overlay} region={region} onReady={onReady} onLog={onLog} />
     </Canvas>
   );
 }
@@ -117,8 +121,9 @@ function glowTexture() {
   return t;
 }
 
-function Graph({ overlay, onReady, onLog }: Omit<Props, "active">) {
+function Graph({ overlay, region, onReady, onLog }: Omit<Props, "active">) {
   const group = useRef<THREE.Group>(null);
+  const inner = useRef<THREE.Group>(null);
   const fill = useRef<THREE.InstancedMesh>(null);
   const outline = useRef<THREE.InstancedMesh>(null);
   const glow = useRef<THREE.InstancedMesh>(null);
@@ -137,6 +142,32 @@ function Graph({ overlay, onReady, onLog }: Omit<Props, "active">) {
     return () => window.removeEventListener("pointermove", move);
   }, []);
   const raycaster = useMemo(() => new THREE.Raycaster(), []);
+
+  // Framing: camera distance + view offset that fit BOUNDS into the region (re-measured on resize).
+  const frame = useRef({ camZ: VIEW.camZ, ox: 0, oy: 0, W: 1, H: 1 });
+  useEffect(() => {
+    const el = region.current;
+    if (!el) return;
+    const tanHalf = Math.tan(((VIEW.fov / 2) * Math.PI) / 180);
+    const measure = () => {
+      const c = gl.domElement.getBoundingClientRect();
+      const r = el.getBoundingClientRect();
+      if (!c.width || !c.height || !r.width || !r.height) return;
+      const ppu = Math.min((r.height * FIT.h) / BOUNDS.h, (r.width * FIT.w) / BOUNDS.w);
+      frame.current = {
+        camZ: c.height / (2 * tanHalf * ppu),
+        ox: c.width / 2 - (r.left - c.left + r.width / 2),
+        oy: c.height / 2 - (r.top - c.top + r.height / 2),
+        W: c.width,
+        H: c.height,
+      };
+    };
+    measure();
+    const ro = new ResizeObserver(measure);
+    ro.observe(el);
+    ro.observe(gl.domElement);
+    return () => ro.disconnect();
+  }, [gl, region]);
 
   /* ---------- static resources ---------- */
   const res = useMemo(() => {
@@ -357,17 +388,23 @@ function Graph({ overlay, onReady, onLog }: Omit<Props, "active">) {
       S.hovered = hit?.instanceId ?? -1;
     } else S.hovered = -1;
 
-    // Camera: scroll dolly + cursor parallax. Group: slow drift.
+    // Camera: fit to the region, cursor parallax, and on scroll dolly back while the
+    // view offset relaxes to the hero centre (the graph settles behind the headline).
     const scroll = clamp01(window.scrollY / Math.max(1, window.innerHeight));
     const se = easeInOut(scroll);
-    S.cam.set(P.x * 0.35, P.y * 0.22, VIEW.camZ + (VIEW.scrollCamZ - VIEW.camZ) * se);
-    camera.position.lerp(S.cam, 0.08);
+    const fr = frame.current;
+    const camZ = fr.camZ * (1 + VIEW.scrollDolly * se);
+    S.cam.set(P.x * 0.016 * camZ, P.y * 0.01 * camZ, camZ);
+    camera.position.lerp(S.cam, S.frame < 3 ? 1 : 0.08);
     camera.lookAt(0, 0, 0);
+    const pc = camera as THREE.PerspectiveCamera;
+    pc.setViewOffset(fr.W, fr.H, fr.ox * (1 - se), fr.oy * (1 - se), fr.W, fr.H);
 
     const gr = group.current!;
-    gr.position.set(VIEW.offset[0] + VIEW.scrollShiftX * se, VIEW.offset[1] + Math.sin(time * 0.25) * 0.08, VIEW.offset[2]);
-    gr.rotation.set(Math.sin(time * 0.09) * 0.04, Math.sin(time * 0.13) * 0.1, 0);
+    gr.position.set(0, Math.sin(time * 0.25) * 0.06, 0);
+    gr.rotation.set(Math.sin(time * 0.09) * 0.04, Math.sin(time * 0.13) * 0.08, 0);
     gr.updateMatrixWorld();
+    const local = inner.current!.matrixWorld;
 
     // DOM overlays.
     const ov = overlay.current;
@@ -379,7 +416,7 @@ function Graph({ overlay, onReady, onLog }: Omit<Props, "active">) {
         return;
       }
       const p = typeof nodeId === "string" ? NODES[NODE_INDEX[nodeId]].pos : nodeId;
-      tmp.v.set(p[0], p[1], p[2]).applyMatrix4(gr.matrixWorld).project(camera);
+      tmp.v.set(p[0], p[1], p[2]).applyMatrix4(local).project(camera);
       const x = ((tmp.v.x + 1) / 2) * size.width + dx;
       const y = ((1 - tmp.v.y) / 2) * size.height + dy;
       el.style.transform = `translate3d(${x.toFixed(1)}px, ${y.toFixed(1)}px, 0)`;
@@ -426,11 +463,13 @@ function Graph({ overlay, onReady, onLog }: Omit<Props, "active">) {
 
   return (
     <group ref={group}>
+      <group ref={inner} position={[-BOUNDS.cx, -BOUNDS.cy, 0]}>
       <lineSegments ref={lines} geometry={res.lineGeo} material={res.lineMat} />
       <instancedMesh ref={glow} args={[res.quad, res.glowMat, N]} frustumCulled={false} />
       <instancedMesh ref={outline} args={[res.plate, res.outlineMat, N]} />
       <instancedMesh ref={fill} args={[res.plate, res.fillMat, N]} />
       <instancedMesh ref={pulses} args={[res.dot, res.pulseMat, MAX_PULSES * TRAIL]} frustumCulled={false} />
+      </group>
     </group>
   );
 }

@@ -1,5 +1,6 @@
 import {
   EDGES,
+  FIT,
   NODES,
   NODE_INDEX,
   STATIC_T,
@@ -16,33 +17,33 @@ import {
  * - SSR placeholder for the WebGL hero (no blank-hero flash)
  * - fallback for reduced motion, touch / small screens and low-power devices
  *
- * variant "camera": same projection as the 3D scene (desktop, crossfades into it)
- * variant "fit": viewBox fitted to the graph (mobile, sits above the headline)
+ * The viewBox is the graph's projected bounds divided by FIT, so with
+ * preserveAspectRatio="meet" it frames exactly like the WebGL camera does.
+ * `size` only tunes tag type for the expected rendered scale.
  */
-export function GraphStatic({ variant, className = "" }: { variant: "camera" | "fit"; className?: string }) {
+export function GraphStatic({ size, className = "" }: { size: "wide" | "narrow"; className?: string }) {
   const states = nodeStatesAt(STATIC_T);
   const pts = NODES.map((n) => project(n.pos));
 
-  // Edge state: traversed edges into completed/waiting nodes read as done.
   const done = (to: string) => ["completed", "waiting", "running"].includes(states[NODE_INDEX[to]]);
   const merging = EDGES.findIndex((e) => e.from === "merge" && e.to === "approval");
 
-  let viewBox = "-0.5 -0.5 1 1";
-  let fitFont = 0;
-  if (variant === "fit") {
-    const pad = 0.05;
-    const xs = pts.map((p) => p[0]);
-    const ys = pts.map((p) => p[1]);
-    const minX = Math.min(...xs) - pad,
-      maxX = Math.max(...xs) + pad;
-    const minY = Math.min(...ys) - pad * 1.6,
-      maxY = Math.max(...ys) + pad;
-    viewBox = `${minX.toFixed(3)} ${minY.toFixed(3)} ${(maxX - minX).toFixed(3)} ${(maxY - minY).toFixed(3)}`;
-    fitFont = ((maxX - minX) * 10) / 350;
-  }
+  const half = (i: number) => (VIEW.plate * pts[i][2]) / 2;
+  const minX = Math.min(...pts.map((p, i) => p[0] - half(i))),
+    maxX = Math.max(...pts.map((p, i) => p[0] + half(i))),
+    minY = Math.min(...pts.map((p, i) => p[1] - half(i))),
+    maxY = Math.max(...pts.map((p, i) => p[1] + half(i)));
+  const vbW = (maxX - minX) / FIT.w,
+    vbH = (maxY - minY) / FIT.h;
+  const cx = (minX + maxX) / 2,
+    cy = (minY + maxY) / 2;
+  const viewBox = [cx - vbW / 2, cy - vbH / 2, vbW, vbH].map((v) => v.toFixed(4)).join(" ");
+  // ≈11px type: wide regions are height-limited (~300px tall), narrow ones width-limited (~350px wide).
+  const font = size === "wide" ? (11 * vbH) / 300 : (10 * vbW) / 350;
 
   const approval = pts[NODE_INDEX.approval];
   const merge = pts[NODE_INDEX.merge];
+  const k = (p: number[]) => VIEW.plate * p[2];
 
   return (
     <svg
@@ -53,13 +54,12 @@ export function GraphStatic({ variant, className = "" }: { variant: "camera" | "
       aria-label="Illustration of an agent workflow run: a trigger, a planning agent and a router fan out to three parallel steps, merge, then pause for human approval before a retry, a writing agent and the output."
     >
       <defs>
-        <radialGradient id="g-halo">
+        <radialGradient id={`g-halo-${size}`}>
           <stop offset="0" stopColor="#ffb547" stopOpacity="0.45" />
           <stop offset="1" stopColor="#ffb547" stopOpacity="0" />
         </radialGradient>
       </defs>
 
-      {/* Edges */}
       <g fill="none" strokeLinecap="round">
         {EDGES.map((e, i) => {
           const { a, c1, c2, b } = edgeControls(e);
@@ -80,39 +80,37 @@ export function GraphStatic({ variant, className = "" }: { variant: "camera" | "
         })}
       </g>
 
-      {/* Approval halo (breathes via CSS unless reduced motion) */}
-      <circle className="graph-halo" cx={approval[0]} cy={approval[1]} r={VIEW.plate * approval[2] * 2.4} fill="url(#g-halo)" />
+      <circle className="graph-halo" cx={approval[0]} cy={approval[1]} r={k(approval) * 2.4} fill={`url(#g-halo-${size})`} />
 
-      {/* Nodes */}
       <g>
         {NODES.map((n, i) => {
-          const [x, y, k] = pts[i];
-          const s = VIEW.plate * k;
+          const [x, y] = pts[i];
+          const s = VIEW.plate * pts[i][2];
           return <rect key={n.id} x={x - s / 2} y={y - s / 2} width={s} height={s} rx={s * 0.18} {...nodeStyle(states[i])} vectorEffect="non-scaling-stroke" />;
         })}
       </g>
 
-      {/* Tags */}
-      {variant === "camera" ? (
-        <g fontFamily="var(--font-mono), ui-monospace, monospace" fontSize={0.0135} letterSpacing="0.02em">
-          <text x={approval[0] + VIEW.plate * approval[2] * 0.9} y={approval[1] - VIEW.plate * approval[2] * 0.9} fill="#ffb547">
-            awaiting approval · 00:00:03
-          </text>
-          <text x={merge[0] + VIEW.plate * merge[2] * 0.8} y={merge[1] + VIEW.plate * merge[2] * 1.5} fill="#83838c">
-            merge {mergeArrivals(STATIC_T)}/3
-          </text>
-        </g>
-      ) : (
-        // Mobile: the SVG renders ~350px wide, so size type to ≈10px and centre it on the node.
-        <g fontFamily="var(--font-mono), ui-monospace, monospace" fontSize={fitFont} textAnchor="middle">
-          <text x={approval[0]} y={approval[1] - VIEW.plate * approval[2] * 1.1} fill="#ffb547">
-            awaiting approval
-          </text>
-          <text x={merge[0] - VIEW.plate * merge[2] * 0.9} y={merge[1] + VIEW.plate * merge[2] * 1.9} fill="#83838c" textAnchor="end">
-            merge {mergeArrivals(STATIC_T)}/3
-          </text>
-        </g>
-      )}
+      <g fontFamily="var(--font-mono), ui-monospace, monospace" fontSize={font}>
+        {size === "wide" ? (
+          <>
+            <text x={approval[0] + k(approval) * 0.9} y={approval[1] - k(approval) * 0.9} fill="#ffb547">
+              awaiting approval · 00:00:03
+            </text>
+            <text x={merge[0] - k(merge) * 0.9} y={merge[1] + k(merge) * 1.6} fill="#83838c" textAnchor="end">
+              merge {mergeArrivals(STATIC_T)}/3
+            </text>
+          </>
+        ) : (
+          <>
+            <text x={approval[0]} y={approval[1] - k(approval) * 1.1} fill="#ffb547" textAnchor="middle">
+              awaiting approval
+            </text>
+            <text x={merge[0] - k(merge) * 0.9} y={merge[1] + k(merge) * 1.9} fill="#83838c" textAnchor="end">
+              merge {mergeArrivals(STATIC_T)}/3
+            </text>
+          </>
+        )}
+      </g>
     </svg>
   );
 }
