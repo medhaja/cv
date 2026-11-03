@@ -66,7 +66,7 @@ Headings never exceed 14 words per line. Serif headlines are left-aligned, never
 ## 3. Spacing, radius, grid
 
 **Spacing.** A 4px base, used through Tailwind's default `--spacing: 0.25rem`. The rhythm steps are 4 · 8 · 12 · 16 · 24 · 32 · 48 · 64 · 96 · 128 · 160.
-- Section padding is 96px on mobile and 160px on desktop. Gaps between section heads and content are 48 / 64px.
+- **Section structure (revised Nov 2026).** Each section opens with a full-width `line` rule that carries one row: the mono coordinate (`§02 /work`) on the left and the section label on the right (on desktop, in the content column). The heading row follows **32px** below on desktop and **24px** on mobile. Sections are separated by bottom padding of 160px on desktop and 96px on mobile. Gaps between section heads and content are 48 / 64px. A section can carry a second label on the same row ("Work / Featured product").
 - Card padding is 24px on mobile and 32px on desktop.
 
 **Radius.** Engineered and nearly square.
@@ -164,6 +164,18 @@ The diagram is an SVG with five horizontal tiers: Clients, API, State, Execution
 - **Flow.** On entering view, a request packet travels Client → FastAPI → PostgreSQL. The `run id` hops to Redis → worker. The worker fans out to providers, tools and the sandbox, and results write back to PostgreSQL. Each hop labels itself with the existing connector text ("runs and events persisted; run id enqueued", and so on).
 - Under reduced motion the full path is drawn statically.
 - On mobile the tiers stack vertically and the packet travels downward.
+
+### Implementation notes (Stage 3)
+- The diagram is an SVG generated from the content layer.
+  - **Wide (≥768px):** tiers are rows and hops are straight lines. Connector captions are right-aligned so they never sit under a hop line.
+  - **Narrow:** nodes are stacked, and hops run along a left rail.
+  - **The packet's path:** Web UI → FastAPI → PostgreSQL → Redis → Celery workers. It then fans out to the three effects, and the outcome returns to PostgreSQL along a dashed line.
+  - **Step captions** reuse the case study's connector text and decision titles.
+  - **Pause/play:** the button satisfies WCAG 2.2.2. The animation also pauses off-screen. Under reduced motion it shows the full path statically, with no packet.
+  - **Screen readers:** a visually hidden list carries every tier, node and connector.
+- **Decisions** are native `<details>` cards: number, title and a `+` that rotates to `×`. The body shows *Decision* and *Trade-off* side by side, with an amber rule on the trade-off. They work without JavaScript.
+- **Evidence:** tables at ≥640px. Below that, the benchmarks become one card per row (n / P50 / P95 in mono), with the source line kept. The verification table stays a table because it has two columns.
+- **Progress nav:** sticky. It highlights the section under a reading line 35% down the viewport (`aria-current`) and fills an amber progress rule.
 
 ## 8. Voice in the UI
 

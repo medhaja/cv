@@ -82,7 +82,22 @@ export const seo = {
   },
 } as const;
 
-/** Shared dashboard screenshot (existing assets in public/img/isocline). */
+/**
+ * Lead image: cropped from the owner's desktop-app capture (approved Nov 2026).
+ * Run header, stats row and canvas only; no approval JSON, no inspector panel.
+ */
+export const runShot = {
+  png: "/img/isocline/run-approval-1600.png",
+  webp960: "/img/isocline/run-approval-960.webp",
+  webp1600: "/img/isocline/run-approval-1600.webp",
+  width: 1600,
+  height: 618,
+  urlBar: "Isocline",
+  alt: "Isocline desktop app: a research workflow where specialist agents run in parallel, merge their outputs, and wait at a human-approval step before generating a report.",
+  caption: "A demo run paused at the human-approval step.",
+} as const;
+
+/** Secondary image: the dashboard (existing assets in public/img/isocline). */
 export const dashboardShot = {
   png: "/img/isocline/dashboard-1600.png",
   webp960: "/img/isocline/dashboard-960.webp",
@@ -90,6 +105,7 @@ export const dashboardShot = {
   width: 1600,
   height: 792,
   urlBar: "localhost:3000/dashboard",
+  title: "Isocline — demo dashboard",
   alt: "Isocline dashboard: summary tiles for runs, success rate, tokens, spend and average duration; a table of recent completed workflow runs; and a list of models in use across OpenAI, Google and Anthropic.",
 } as const;
 
@@ -173,6 +189,7 @@ export const isocline = {
     { label: "Source on GitHub", href: "https://github.com/medhaja/isocline", external: true },
     { label: "Documentation", href: "https://github.com/medhaja/isocline/tree/main/docs", external: true },
     { label: "Windows installer", href: "https://github.com/medhaja/isocline/releases/latest", external: true },
+    { label: "Tutorial video", href: "https://www.youtube.com/watch?v=S-avnlTtgcU", external: true },
   ] satisfies Link[],
 };
 
@@ -195,7 +212,7 @@ export const selectedWork = {
       tag: "Voice AI · Agent orchestration",
       description:
         "A voice-first conversational agent that screens technical candidates, using RAG to probe specific technical domains, with automated technical and communication scoring and a low-latency voice-response loop.",
-      links: [{ label: "Demo video", href: null, external: true }],
+      links: [{ label: "Demo video", href: "https://www.youtube.com/watch?v=EccRZileuTo", external: true }],
     },
   ] as SelectedProject[],
 };
@@ -675,6 +692,7 @@ export const caseStudy = {
       { label: "Benchmarks", text: "Benchmark method and reference run", href: "https://github.com/medhaja/isocline/blob/main/benchmarks/README.md" },
       { label: "CI", text: "CI pipeline: tests, live durability checks, image builds, secret scan", href: "https://github.com/medhaja/isocline/blob/main/.github/workflows/ci.yml" },
       { label: "Download", text: "Latest release with the Windows installer", href: "https://github.com/medhaja/isocline/releases/latest" },
+      { label: "Video", text: "Tutorial video", href: "https://www.youtube.com/watch?v=S-avnlTtgcU" },
     ],
   },
 

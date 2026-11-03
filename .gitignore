@@ -12,3 +12,10 @@ next-env.d.ts
 # Local tooling output
 screenshots/
 .playwright-mcp/
+
+# Owner's raw captures (only cropped exports in public/ are published)
+isocline_screenshot.png
+
+# Other local tooling
+.github/hooks/impeccable.json
+.impeccable/

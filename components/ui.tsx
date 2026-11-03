@@ -32,14 +32,16 @@ export function TextLink({ link, className = "" }: { link: LinkT; className?: st
 }
 
 /**
- * Section frame: full-width rule with a mono coordinate, then the
- * asymmetric 3 / 9 grid (label column + content column).
+ * Section frame: full-width rule carrying one row — mono coordinate (left) and
+ * section label (right) — then, 24px / 32px below, the asymmetric 3 / 9 grid
+ * (aside column + heading column). Bottom padding separates sections.
  */
 export function Section({
   id,
   index,
   path,
   label,
+  sublabel,
   title,
   children,
   titleId,
@@ -50,6 +52,8 @@ export function Section({
   index: string;
   path: string;
   label: string;
+  /** Optional second label on the same row, e.g. "Work / Featured product". */
+  sublabel?: string;
   title?: ReactNode;
   titleId?: string;
   children: ReactNode;
@@ -60,25 +64,51 @@ export function Section({
   const tid = titleId ?? `${id}-title`;
   return (
     <section id={id} aria-labelledby={title ? tid : `${id}-label`} className="section">
-      <Container>
-        <Coord index={index} path={path} />
-        <div className="grid grid-cols-1 gap-x-6 gap-y-6 md:grid-cols-12">
-          <div className="md:col-span-3">
-            <p id={`${id}-label`} className="label">
-              {label}
-            </p>
-            {aside}
+      <MarkerRow index={index} path={path}>
+        <span id={`${id}-label`}>{label}</span>
+        {sublabel && (
+          <>
+            <span aria-hidden="true" className="mx-2 text-fg-subtle/60">
+              /
+            </span>
+            <span>{sublabel}</span>
+          </>
+        )}
+      </MarkerRow>
+      <Container className="mt-6 md:mt-8">
+        {(title || head || aside) && (
+          <div className="grid grid-cols-1 gap-x-6 gap-y-6 md:grid-cols-12">
+            {/* The aside column is desktop-only (mobile variants render inside the content). */}
+            <div className="hidden md:col-span-3 md:block">{aside}</div>
+            {title && (
+              <h2 id={tid} className="font-display text-display-lg text-balance md:col-span-9">
+                {title}
+              </h2>
+            )}
+            {head && <div className="md:col-span-9">{head}</div>}
           </div>
-          {title && (
-            <h2 id={tid} className="font-display text-display-lg text-balance md:col-span-9">
-              {title}
-            </h2>
-          )}
-          {head && <div className="md:col-span-9">{head}</div>}
-        </div>
+        )}
         <div className="mt-12 md:mt-16">{children}</div>
       </Container>
     </section>
+  );
+}
+
+/**
+ * The rule + one row: coordinate (left, decorative) and the section label
+ * (right on mobile; content column on desktop). Shared by both pages.
+ */
+export function MarkerRow({ index, path, children }: { index: string; path: string; children?: ReactNode }) {
+  return (
+    <div className="border-t border-line">
+      <Container className="grid grid-cols-[auto_1fr] items-baseline gap-x-6 py-3 md:grid-cols-12">
+        <span aria-hidden="true" className="flex gap-5 font-mono text-[0.6875rem] tracking-[0.06em] text-fg-subtle md:col-span-3">
+          <span>§{index}</span>
+          <span>{path}</span>
+        </span>
+        {children && <p className="label text-right md:col-span-9 md:text-left">{children}</p>}
+      </Container>
+    </div>
   );
 }
 
@@ -125,18 +155,6 @@ export function BrowserFrame({
           className="block h-auto w-full"
         />
       </picture>
-    </div>
-  );
-}
-
-/** Full-width section rule with a mono coordinate, aligned to the content edge. */
-export function Coord({ index, path }: { index: string; path: string }) {
-  return (
-    <div className="coord" aria-hidden="true">
-      <div className="mx-auto flex w-full max-w-site gap-5 px-5 md:px-10">
-        <span>§{index}</span>
-        <span>{path}</span>
-      </div>
     </div>
   );
 }

@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
-import { caseStudy as cs, caseStudySections, dashboardShot, seo, site } from "@/content/site";
+import { caseStudy as cs, caseStudySections, dashboardShot, runShot, seo, site } from "@/content/site";
 import { Rich } from "@/components/Rich";
-import { Button, Container, Coord, Label, ShotPanel, TextLink } from "@/components/ui";
+import { Button, Container, Label, MarkerRow, ShotPanel, TextLink } from "@/components/ui";
 import { SmartLink } from "@/components/SmartLink";
 import { CopyEmail } from "@/components/CopyEmail";
+import { ArchitectureDiagram } from "@/components/case/ArchitectureDiagram";
+import { ProgressNav } from "@/components/case/ProgressNav";
 
 export const metadata: Metadata = {
   title: seo.isocline.title,
@@ -25,7 +27,7 @@ export default function IsoclineCaseStudy() {
   return (
     <article aria-labelledby="cs-title">
       {/* ------------------------------ Hero ------------------------------ */}
-      <header className="pb-16 pt-16 md:pb-24 md:pt-24">
+      <header className="pb-16 pt-12 md:pb-24 md:pt-20">
         <Container>
           <div className="grid grid-cols-1 gap-x-6 gap-y-6 md:grid-cols-12">
             <div className="flex flex-col gap-4 md:col-span-3">
@@ -59,9 +61,10 @@ export default function IsoclineCaseStudy() {
             ))}
           </div>
 
+          {/* Lead image: the demonstrated workflow, paused at human approval */}
           <figure className="mt-14 md:mt-20">
-            <ShotPanel shot={dashboardShot} priority />
-            <figcaption className="mt-4 max-w-[70ch] font-mono text-small text-fg-subtle">{cs.shotCaption}</figcaption>
+            <ShotPanel shot={runShot} priority />
+            <figcaption className="mt-4 font-mono text-small text-fg-subtle">{runShot.caption}</figcaption>
           </figure>
         </Container>
       </header>
@@ -69,18 +72,9 @@ export default function IsoclineCaseStudy() {
       {/* ---------------------------- Sections ---------------------------- */}
       <Container>
         <div className="grid grid-cols-1 gap-x-6 md:grid-cols-12">
-          <nav aria-label="Case study sections" className="hidden md:col-span-3 md:block">
-            <ol className="sticky top-24 flex flex-col gap-1 border-t border-line pt-6">
-              {caseStudySections.map((s) => (
-                <li key={s.id}>
-                  <a href={`#${s.id}`} className="flex gap-3 py-1.5 text-small text-fg-muted transition-colors hover:text-fg">
-                    <span className="font-mono text-fg-subtle">{s.n}</span>
-                    {s.title}
-                  </a>
-                </li>
-              ))}
-            </ol>
-          </nav>
+          <div className="hidden md:col-span-3 md:block">
+            <ProgressNav items={caseStudySections} />
+          </div>
 
           <div className="min-w-0 md:col-span-9">
             <CsSection {...cs.problem}>
@@ -118,6 +112,14 @@ export default function IsoclineCaseStudy() {
                   {cs.demonstrated.note}
                 </p>
               </div>
+
+              {/* Secondary image: dashboard */}
+              <figure className="mt-12">
+                <ShotPanel shot={dashboardShot} sizes="(min-width: 1280px) 880px, 100vw" />
+                <figcaption className="mt-4 font-mono text-small text-fg-subtle">
+                  <span className="text-fg-muted">{dashboardShot.title}.</span> {cs.shotCaption}
+                </figcaption>
+              </figure>
             </CsSection>
 
             <CsSection {...cs.ownership}>
@@ -130,52 +132,39 @@ export default function IsoclineCaseStudy() {
 
             <CsSection {...cs.architecture}>
               <figure aria-labelledby="arch-caption">
-                <ol className="panel flex flex-col gap-0 p-4 md:p-6">
-                  {cs.architecture.tiers.map((tier, i) => (
-                    <li key={tier.label}>
-                      <div className="grid grid-cols-1 gap-3 md:grid-cols-[6.5rem_1fr] md:items-center">
-                        <span className="label">{tier.label}</span>
-                        <div className={`grid gap-3 ${tier.nodes.length === 3 ? "sm:grid-cols-3" : tier.nodes.length === 2 ? "sm:grid-cols-2" : ""}`}>
-                          {tier.nodes.map((n) => (
-                            <div
-                              key={n.title}
-                              className={`rounded-md border bg-ink-950 p-4 ${n.key ? "border-signal/60" : "border-line-strong"}`}
-                            >
-                              <strong className="block text-small text-fg">{n.title}</strong>
-                              <span className="mt-1 block font-mono text-[0.75rem] leading-snug text-fg-subtle">{n.sub}</span>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                      {i < cs.architecture.connectors.length && (
-                        <p className="my-2 flex items-center gap-3 font-mono text-[0.75rem] text-fg-subtle md:ml-[7.25rem]">
-                          <span aria-hidden="true">↓</span>
-                          {cs.architecture.connectors[i]}
-                        </p>
-                      )}
-                    </li>
-                  ))}
-                </ol>
+                <ArchitectureDiagram />
                 <figcaption id="arch-caption" className="mt-4 font-mono text-small text-fg-subtle">
                   <Rich text={cs.architecture.caption} />
                 </figcaption>
               </figure>
 
               <h3 className="mt-16 text-heading font-medium">{cs.architecture.decisionsTitle}</h3>
-              <ul className="mt-6 border-t border-line">
+              <ul className="mt-6 flex flex-col gap-3">
                 {cs.architecture.decisions.map((d, i) => (
-                  <li key={d.title} className="grid grid-cols-1 gap-x-6 gap-y-3 border-b border-line py-8 md:grid-cols-[3rem_1fr]">
-                    <span className="font-mono text-small text-fg-subtle">{String(i + 1).padStart(2, "0")}</span>
-                    <div>
-                      <h4 className="text-body font-medium text-fg">{d.title}</h4>
-                      <p className="mt-3 text-small text-fg-muted">
-                        <Rich text={d.body} />
-                      </p>
-                      <p className="mt-4 border-l border-signal/50 pl-4 text-small text-fg-muted">
-                        <span className="label mr-2">Trade-off</span>
-                        <Rich text={d.tradeoff} />
-                      </p>
-                    </div>
+                  <li key={d.title}>
+                    <details className="decision group rounded-md border border-line bg-ink-900 open:border-line-strong">
+                      <summary className="flex cursor-pointer list-none items-start gap-4 p-5 md:p-6">
+                        <span className="pt-0.5 font-mono text-small text-fg-subtle">{String(i + 1).padStart(2, "0")}</span>
+                        <span className="flex-1 text-body font-medium text-fg">{d.title}</span>
+                        <span aria-hidden="true" className="mt-0.5 font-mono text-fg-subtle transition-transform duration-300 group-open:rotate-45">
+                          +
+                        </span>
+                      </summary>
+                      <div className="grid grid-cols-1 gap-4 border-t border-line px-5 pb-6 pt-5 md:grid-cols-2 md:gap-6 md:px-6 md:pl-[3.75rem]">
+                        <div>
+                          <p className="label">Decision</p>
+                          <p className="mt-2 text-small text-fg-muted">
+                            <Rich text={d.body} />
+                          </p>
+                        </div>
+                        <div className="border-l border-signal/50 pl-4 md:pl-6">
+                          <p className="label">Trade-off</p>
+                          <p className="mt-2 text-small text-fg-muted">
+                            <Rich text={d.tradeoff} />
+                          </p>
+                        </div>
+                      </div>
+                    </details>
                   </li>
                 ))}
               </ul>
@@ -201,8 +190,12 @@ export default function IsoclineCaseStudy() {
                   <caption>{cs.evidence.verification.source}</caption>
                   <thead>
                     <tr>
-                      <th scope="col" className="label">{cs.evidence.verification.columns[0]}</th>
-                      <th scope="col" className="label !text-right">{cs.evidence.verification.columns[1]}</th>
+                      <th scope="col" className="label">
+                        {cs.evidence.verification.columns[0]}
+                      </th>
+                      <th scope="col" className="label !text-right">
+                        {cs.evidence.verification.columns[1]}
+                      </th>
                     </tr>
                   </thead>
                   <tbody>
@@ -223,8 +216,10 @@ export default function IsoclineCaseStudy() {
 
               <h3 className="mt-16 text-heading font-medium">{cs.evidence.benchmarks.title}</h3>
               <p className="mt-3 text-small text-fg-muted">{cs.evidence.benchmarks.intro}</p>
-              <div className="panel mt-6 overflow-x-auto">
-                <table className="data-table min-w-[36rem]">
+
+              {/* ≥640px: table. Below: one card per benchmark (no sideways scroll). */}
+              <div className="panel mt-6 hidden overflow-x-auto sm:block">
+                <table className="data-table">
                   <caption>{cs.evidence.benchmarks.source}</caption>
                   <thead>
                     <tr>
@@ -247,6 +242,28 @@ export default function IsoclineCaseStudy() {
                   </tbody>
                 </table>
               </div>
+              <div className="mt-6 sm:hidden">
+                <ul className="flex flex-col gap-3">
+                  {cs.evidence.benchmarks.rows.map(([name, n, p50, p95]) => (
+                    <li key={name} className="panel p-4">
+                      <p className="text-small text-fg-muted">{name}</p>
+                      <dl className="mt-3 grid grid-cols-3 gap-2 border-t border-line pt-3 font-mono tabular">
+                        {[
+                          ["n", n],
+                          ["P50", p50],
+                          ["P95", p95],
+                        ].map(([k, v]) => (
+                          <div key={k}>
+                            <dt className="text-[0.6875rem] text-fg-subtle">{k}</dt>
+                            <dd className={`mt-0.5 text-small ${k === "n" ? "text-fg-muted" : "text-fg"}`}>{v}</dd>
+                          </div>
+                        ))}
+                      </dl>
+                    </li>
+                  ))}
+                </ul>
+                <p className="mt-3 font-mono text-[0.75rem] text-fg-subtle">{cs.evidence.benchmarks.source}</p>
+              </div>
 
               <h3 className="mt-16 text-heading font-medium">{cs.evidence.linksTitle}</h3>
               <ul className="mt-6 border-t border-line">
@@ -265,14 +282,13 @@ export default function IsoclineCaseStudy() {
       </Container>
 
       {/* ------------------------------ CTA ------------------------------- */}
-      <section aria-labelledby="cta-title" className="section mt-24">
-        <Container>
-          <Coord index="07" path="/contact" />
-          <div className="grid grid-cols-1 gap-x-6 gap-y-6 md:grid-cols-12">
-            <Label as="p" className="md:col-span-3">
-              {cs.cta.label}
-            </Label>
-            <div className="md:col-span-9">
+      <section aria-labelledby="cta-title" className="section mt-8">
+        <MarkerRow index="07" path="/contact">
+          {cs.cta.label}
+        </MarkerRow>
+        <Container className="mt-6 md:mt-8">
+          <div className="grid grid-cols-1 gap-x-6 md:grid-cols-12">
+            <div className="md:col-span-9 md:col-start-4">
               <h2 id="cta-title" className="font-display text-display-lg">
                 {cs.cta.title}
               </h2>
@@ -290,11 +306,15 @@ export default function IsoclineCaseStudy() {
   );
 }
 
+/** Case-study section: rule + marker row (§0n left, path right), heading 24px / 32px below. */
 function CsSection({ n, id, title, children }: { n: string; id: string; title: string; children: React.ReactNode }) {
   return (
-    <section id={id} aria-labelledby={`${id}-title`} className="scroll-mt-24 border-t border-line py-16 md:py-24">
-      <p className="font-mono text-small text-fg-subtle">{n}</p>
-      <h2 id={`${id}-title`} className="mt-3 font-display text-display-md">
+    <section id={id} aria-labelledby={`${id}-title`} className="scroll-mt-20 pb-16 md:pb-24">
+      <div className="flex items-baseline justify-between border-t border-line py-3 font-mono text-[0.6875rem] tracking-[0.06em] text-fg-subtle">
+        <span>§{n}</span>
+        <span aria-hidden="true">/{id}</span>
+      </div>
+      <h2 id={`${id}-title`} className="mt-6 font-display text-display-md md:mt-8">
         {title}
       </h2>
       <div className="mt-10">{children}</div>

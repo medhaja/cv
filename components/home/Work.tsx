@@ -1,4 +1,4 @@
-import { dashboardShot, earlierWork, isocline, selectedWork, work } from "@/content/site";
+import { dashboardShot, earlierWork, isocline, runShot, selectedWork, work } from "@/content/site";
 import { Rich } from "../Rich";
 import { Button, Label, Section, ShotPanel, Tag, TextLink } from "../ui";
 import { SmartLink } from "../SmartLink";
@@ -10,6 +10,7 @@ export function Work() {
       index="02"
       path="/work"
       label={work.label}
+      sublabel={work.title}
       aside={
         <ul className="mt-6 hidden flex-col items-start gap-2 md:flex">
           {isocline.tags.map((t) => (
@@ -21,8 +22,7 @@ export function Work() {
       }
       head={
         <div id="isocline" className="scroll-mt-24">
-          <p className="label">{work.title}</p>
-          <h2 id="isocline-title" className="mt-4 font-display text-display-xl">
+          <h2 id="isocline-title" className="font-display text-display-xl">
             {isocline.name}
           </h2>
           <p className="mt-6 max-w-[52ch] text-lead text-fg-muted">{isocline.tagline}</p>
@@ -47,9 +47,10 @@ function Isocline() {
   const [caseStudy, repo, ...textLinks] = isocline.links;
   return (
     <div>
-      {/* Screenshot */}
+      {/* Lead image: demo run paused at human approval */}
       <figure>
-        <ShotPanel shot={dashboardShot} />
+        <ShotPanel shot={runShot} />
+        <figcaption className="mt-4 font-mono text-small text-fg-subtle">{runShot.caption}</figcaption>
       </figure>
 
       {/* Proof tiles */}
@@ -86,6 +87,14 @@ function Isocline() {
           <p className="mt-3 font-mono text-small text-fg-subtle">{isocline.demonstrated.note}</p>
         </div>
       </div>
+
+      {/* Secondary image: dashboard */}
+      <figure className="mt-16 grid grid-cols-1 gap-x-6 md:mt-20 md:grid-cols-12">
+        <figcaption className="label mb-4 md:col-span-3 md:mb-0">{dashboardShot.title}</figcaption>
+        <div className="md:col-span-9">
+          <ShotPanel shot={dashboardShot} sizes="(min-width: 1280px) 880px, 100vw" />
+        </div>
+      </figure>
 
       {/* Feature grid */}
       <div className="mt-16 md:mt-24">

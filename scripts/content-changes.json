@@ -47,12 +47,19 @@
       "Selected work",
       "L1 Interviewer Bot",
       "Voice AI · Agent orchestration",
-      "A voice-first conversational agent that screens technical candidates, using RAG to probe specific technical domains, with automated technical and communication scoring and a low-latency voice-response loop."
+      "A voice-first conversational agent that screens technical candidates, using RAG to probe specific technical domains, with automated technical and communication scoring and a low-latency voice-response loop.",
+      "A demo run paused at the human-approval step.",
+      "Isocline — demo dashboard",
+      "Tutorial video",
+      "Demo video"
     ],
     "out/isocline/index.html": [
       "Demonstrated workflow",
       "A research workflow runs specialist agents in parallel, merges their outputs, and pauses for human approval before generating a report. The run inspector shows each node’s output, token usage, latency and estimated cost.",
-      "This is demonstrated functionality, not a customer deployment."
+      "This is demonstrated functionality, not a customer deployment.",
+      "A demo run paused at the human-approval step.",
+      "Isocline — demo dashboard",
+      "Tutorial video"
     ]
   },
   "changes_log": {
@@ -60,18 +67,26 @@
     "2026-11-04 Earlier entries": "PyImageSearch (Jun 2020 – Mar 2021) and Harman International (Sep 2019 – Jun 2020) added below EXL",
     "2026-11-04 Biz-Metric first bullet": "ADF-to-PySpark accelerator, 90% figure only",
     "2026-11-04 Selected work": "L1 Interviewer Bot card; Demo video link hidden until URL is supplied",
-    "2026-11-04 Résumé": "Links hidden (site.links.resume = null) until an approved PDF is in public/resume/"
+    "2026-11-04 Résumé": "Links hidden (site.links.resume = null) until an approved PDF is in public/resume/",
+    "2026-11-04 Lead image": "Desktop-app run (paused at approval) is the lead image on home and case study; dashboard is secondary (\"Isocline — demo dashboard\")",
+    "2026-11-04 Videos": "Interviewer Bot \"Demo video\" and Isocline \"Tutorial video\" links (plain links, no embeds)",
+    "2026-11-04 Section markers": "Marker row shares the label row; Work shows \"Work / Featured product\""
   },
   "forbidden": {
     "out/index.html": [
       "70%",
       "Data Scientist",
       "Résumé",
-      "Demo video",
-      "Apr 2023 – Oct 2024"
+      "Apr 2023 – Oct 2024",
+      "Alphabet",
+      "Google (Alphabet"
     ],
     "out/isocline/index.html": [
-      "70%"
+      "70%",
+      "Alphabet",
+      "Data Scientist",
+      "Google (Alphabet"
     ]
-  }
+  },
+  "_forbidden_note": "Google itself is allowed (Google Kubernetes Engine); the demo run's company analysis (Google/Alphabet) must never appear."
 }
