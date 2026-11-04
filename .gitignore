@@ -1,1 +1,23 @@
+# Private notes: never commit or publish
 CONTENT_CHECKLIST.md
+
+# Next.js / Node
+node_modules/
+.next/
+out/
+next-env.d.ts
+*.tsbuildinfo
+.env*
+
+# Local tooling output
+screenshots/
+.playwright-mcp/
+
+# Owner's raw captures (only cropped exports in public/ are published)
+isocline_screenshot.png
+
+# Other local tooling
+.github/hooks/impeccable.json
+.impeccable/
+
+# Résumé PDF: not published yet (never commit)

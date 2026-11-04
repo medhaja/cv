@@ -1,43 +1,119 @@
-# Simple workflow for deploying static content to GitHub Pages
-name: Deploy static content to Pages
+# Build the Next.js static export and deploy ONLY out/ to GitHub Pages.
+# Source files, design notes and private notes in the repo are never published.
+name: Deploy site to Pages
 
 on:
-  # Runs on pushes targeting the default branch
   push:
     branches: ["main"]
-
-  # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
-# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
 permissions:
   contents: read
   pages: write
   id-token: write
 
-# Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queued.
-# However, do NOT cancel in-progress runs as we want to allow these production deployments to complete.
+# Allow only one concurrent deployment; don't cancel an in-progress production deploy.
 concurrency:
   group: "pages"
   cancel-in-progress: false
 
 jobs:
-  # Single deploy job since we're just deploying
-  deploy:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+  build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Setup Pages
+
+      - name: Set up Node 24
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build static export
+        run: npm run build
+
+      - name: Guard - nothing internal in out/
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -d out || { echo "::error::out/ was not produced"; exit 1; }
+
+          leaks=$(find out \( -iname '*.md' -o -iname 'CONTENT_CHECKLIST*' -o -name '*.map' \
+                    -o -path 'out/legacy' -o -path 'out/legacy/*' \
+                    -o -path 'out/screenshots' -o -path 'out/screenshots/*' \) -print)
+          if [ -n "$leaks" ]; then
+            echo "::error::Refusing to deploy. Internal files found in out/:"
+            echo "$leaks"
+            exit 1
+          fi
+
+          # Allowlist of file types. Anything else is unexpected and blocks the deploy.
+          unexpected=$(find out -type f ! \( -name '*.html' -o -name '*.txt' -o -name '*.js' -o -name '*.css' \
+                    -o -name '*.woff2' -o -name '*.png' -o -name '*.jpg' -o -name '*.webp' -o -name '*.svg' \
+                    -o -name '*.ico' -o -name '*.xml' -o -path 'out/CNAME' -o -path 'out/.nojekyll' \
+                    -o -path 'out/resume/Medhaja-H-L-Resume.pdf' \) -print)
+          if [ -n "$unexpected" ]; then
+            echo "::error::Refusing to deploy. Unexpected files in out/:"
+            echo "$unexpected"
+            exit 1
+          fi
+          # Exactly one document may be published: the résumé PDF.
+          extra_docs=$(find out -type f \( -iname '*.pdf' -o -iname '*.doc*' \) ! -path 'out/resume/Medhaja-H-L-Resume.pdf' -print)
+          if [ -n "$extra_docs" ]; then
+            echo "::error::Only out/resume/Medhaja-H-L-Resume.pdf may be published:"
+            echo "$extra_docs"
+            exit 1
+          fi
+
+          # Third-party scripts: only GoatCounter and Google Tag Manager, and only over https.
+          ALLOWED_SCRIPT_HOSTS="gc.zgo.at www.googletagmanager.com"
+          script_hosts=$(grep -rhoE "(https?:)?//[a-zA-Z0-9.-]+\.[a-z]{2,}/[^\"' )\`]*\.js\b" out --include='*.html' --include='*.js' \
+                         | sed -E 's#^(https?:)?//([^/]+).*#\1//\2#' | sort -u || true)
+          for h in $script_hosts; do
+            case "$h" in
+              https://*) host="${h#https://}" ;;
+              *) echo "::error::Script URL is not https: $h"; exit 1 ;;
+            esac
+            case " $ALLOWED_SCRIPT_HOSTS " in
+              *" $host "*) ;;
+              *) echo "::error::Third-party script host not allowed: $host"; exit 1 ;;
+            esac
+          done
+          echo "Third-party script hosts: ${script_hosts:-none}"
+
+          # Custom domain must survive the deploy.
+          test "$(tr -d '[:space:]' < out/CNAME)" = "medhaja.me" || { echo "::error::out/CNAME missing or wrong"; exit 1; }
+          test -f out/.nojekyll || { echo "::error::out/.nojekyll missing"; exit 1; }
+          test -f out/index.html && test -f out/isocline/index.html || { echo "::error::expected pages missing"; exit 1; }
+          # Build-time OG images must exist (pages reference them in og:image).
+          test -s out/og/home.png && test -s out/og/isocline.png || { echo "::error::OG images missing"; exit 1; }
+          # Core component styles must be in the CSS (Tailwind drops utilities it can't find in source).
+          for cls in btn-primary btn-secondary; do
+            grep -q "\.$cls" out/_next/static/chunks/*.css || { echo "::error::CSS is missing .$cls"; exit 1; }
+          done
+          # Font source files are build inputs only.
+          if find out -iname '*.ttf' | grep -q .; then echo "::error::raw .ttf in out/"; exit 1; fi
+          echo "Guard passed: $(find out -type f | wc -l) files"
+
+      - name: Set up Pages
         uses: actions/configure-pages@v5
-      - name: Upload artifact
+
+      - name: Upload out/ only
         uses: actions/upload-pages-artifact@v3
         with:
-          # Upload entire repository
-          path: '.'
+          path: out
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
