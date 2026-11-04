@@ -46,6 +46,7 @@ export const site = {
     resume: "/resume/Medhaja-H-L-Resume.pdf" as string | null,
   },
   copyright: "© 2026 Medhaja H L",
+  privacyNote: "Visits are counted anonymously with GoatCounter (no cookies). Google Analytics runs only if you accept cookies.",
   nav: [
     { label: "Work", href: "/#work" },
     { label: "Experience", href: "/#experience" },

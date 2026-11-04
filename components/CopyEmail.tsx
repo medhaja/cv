@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { track } from "@/lib/analytics";
 
 export function CopyEmail({ email }: { email: string }) {
   const [copied, setCopied] = useState(false);
@@ -9,6 +10,7 @@ export function CopyEmail({ email }: { email: string }) {
     try {
       await navigator.clipboard.writeText(email);
       setCopied(true);
+      track("email_click", { method: "copy" });
       setTimeout(() => setCopied(false), 2000);
     } catch {
       setCopied(false);

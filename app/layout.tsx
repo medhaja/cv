@@ -6,6 +6,8 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { GridLines } from "@/components/GridLines";
 import { MotionProvider } from "@/components/motion/MotionProvider";
+import { Analytics } from "@/components/analytics/Analytics";
+import { ConsentBanner } from "@/components/analytics/ConsentBanner";
 import { seo, site } from "@/content/site";
 import "./globals.css";
 
@@ -50,6 +52,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <Footer />
           </div>
         </MotionProvider>
+        {/* Production only; scripts load after the page is interactive. */}
+        <Analytics />
+        <ConsentBanner />
       </body>
     </html>
   );

@@ -1,5 +1,6 @@
 import { site } from "@/content/site";
 import { Container } from "./ui";
+import { CookieSettingsButton } from "./analytics/ConsentBanner";
 
 export function Footer() {
   return (
@@ -17,12 +18,16 @@ export function Footer() {
               LinkedIn
             </a>
           </li>
+          <CookieSettingsButton />
           <li>
             <a className="link" href="#top">
               Back to top
             </a>
           </li>
         </ul>
+      </Container>
+      <Container className="mt-6">
+        <p className="max-w-[72ch] text-[0.8125rem] text-fg-subtle">{site.privacyNote}</p>
       </Container>
     </footer>
   );

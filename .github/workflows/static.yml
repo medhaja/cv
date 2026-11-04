@@ -69,12 +69,32 @@ jobs:
             exit 1
           fi
 
+          # Third-party scripts: only GoatCounter and Google Tag Manager, and only over https.
+          ALLOWED_SCRIPT_HOSTS="gc.zgo.at www.googletagmanager.com"
+          script_hosts=$(grep -rhoE "(https?:)?//[a-zA-Z0-9.-]+\.[a-z]{2,}/[^\"' )\`]*\.js\b" out --include='*.html' --include='*.js' \
+                         | sed -E 's#^(https?:)?//([^/]+).*#\1//\2#' | sort -u || true)
+          for h in $script_hosts; do
+            case "$h" in
+              https://*) host="${h#https://}" ;;
+              *) echo "::error::Script URL is not https: $h"; exit 1 ;;
+            esac
+            case " $ALLOWED_SCRIPT_HOSTS " in
+              *" $host "*) ;;
+              *) echo "::error::Third-party script host not allowed: $host"; exit 1 ;;
+            esac
+          done
+          echo "Third-party script hosts: ${script_hosts:-none}"
+
           # Custom domain must survive the deploy.
           test "$(tr -d '[:space:]' < out/CNAME)" = "medhaja.me" || { echo "::error::out/CNAME missing or wrong"; exit 1; }
           test -f out/.nojekyll || { echo "::error::out/.nojekyll missing"; exit 1; }
           test -f out/index.html && test -f out/isocline/index.html || { echo "::error::expected pages missing"; exit 1; }
           # Build-time OG images must exist (pages reference them in og:image).
           test -s out/og/home.png && test -s out/og/isocline.png || { echo "::error::OG images missing"; exit 1; }
+          # Core component styles must be in the CSS (Tailwind drops utilities it can't find in source).
+          for cls in btn-primary btn-secondary; do
+            grep -q "\.$cls" out/_next/static/chunks/*.css || { echo "::error::CSS is missing .$cls"; exit 1; }
+          done
           # Font source files are build inputs only.
           if find out -iname '*.ttf' | grep -q .; then echo "::error::raw .ttf in out/"; exit 1; fi
           echo "Guard passed: $(find out -type f | wc -l) files"

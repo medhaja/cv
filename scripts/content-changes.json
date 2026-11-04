@@ -57,7 +57,9 @@
       "Tutorial video",
       "Demo video",
       "Multiple model providers: OpenAI, Anthropic, Gemini, OpenRouter, Ollama and OpenAI-compatible servers",
-      "Developers and teams who want to compose agent workflows visually and run them on their own infrastructure with multiple model providers or any OpenAI-compatible endpoint. A Windows desktop build and 53 ready-to-run templates also make it usable by individuals."
+      "Developers and teams who want to compose agent workflows visually and run them on their own infrastructure with multiple model providers or any OpenAI-compatible endpoint. A Windows desktop build and 53 ready-to-run templates also make it usable by individuals.",
+      "Visits are counted anonymously with GoatCounter (no cookies). Google Analytics runs only if you accept cookies.",
+      "Cookie settings"
     ],
     "out/isocline/index.html": [
       "Demonstrated workflow",
@@ -67,7 +69,9 @@
       "Isocline — demo dashboard",
       "Tutorial video",
       "Isocline is an open-source, self-hosted control plane for agent workflows. You compose a workflow on a canvas, run it with multiple model providers or any OpenAI-compatible endpoint, and the runtime keeps it correct through crashes, restarts, slow human approvals and failed side effects.",
-      "Waiting without occupying a worker"
+      "Waiting without occupying a worker",
+      "Visits are counted anonymously with GoatCounter (no cookies). Google Analytics runs only if you accept cookies.",
+      "Cookie settings"
     ]
   },
   "changes_log": {
@@ -81,7 +85,8 @@
     "2026-11-04 Section markers": "Marker row shares the label row; Work shows \"Work / Featured product\"",
     "2026-11-04 Provider wording": "\"any model\" → \"multiple model providers or any OpenAI-compatible endpoint\" (case study lead, Who it's for); feature title \"Any model:\" → \"Multiple model providers:\"",
     "2026-11-04 Decision 03": "\"Waiting holds no worker\" → \"Waiting without occupying a worker\"",
-    "2026-11-05 Résumé": "Approved PDF published at /resume/Medhaja-H-L-Resume.pdf; Résumé links shown in hero and contact (no longer forbidden)"
+    "2026-11-05 Résumé": "Approved PDF published at /resume/Medhaja-H-L-Resume.pdf; Résumé links shown in hero and contact (no longer forbidden)",
+    "2026-11-05 Analytics": "Footer privacy note and \"Cookie settings\" control (GoatCounter always on, cookieless; GA4 via GTM only after consent). Banner text is client-rendered, so it is not in the static HTML."
   },
   "forbidden": {
     "out/index.html": [

@@ -37,7 +37,7 @@ export function Hero() {
               <span aria-hidden="true" className="mt-[0.45em] size-2 shrink-0 rounded-full bg-signal shadow-[0_0_12px_2px_rgb(255_181_71/0.45)]" />
               {hero.availability}
             </p>
-            <div className="flex flex-wrap gap-3">
+            <div className="flex flex-wrap gap-3" data-consent-avoid>
               <Button link={hero.ctas[0]} />
               <Button link={hero.ctas[1]} variant="secondary" />
             </div>

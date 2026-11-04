@@ -15,9 +15,12 @@ export function Tag({ children }: { children: ReactNode }) {
   return <span className="tag">{children}</span>;
 }
 
+/** Literal class names: Tailwind only generates utilities it can find verbatim in source. */
+const BUTTON = { primary: "btn btn-primary", secondary: "btn btn-secondary" } as const;
+
 export function Button({ link, variant = "primary" }: { link: LinkT; variant?: "primary" | "secondary" }) {
   return (
-    <SmartLink href={link.href} external={link.external} className={`btn btn-${variant}`}>
+    <SmartLink href={link.href} external={link.external} className={BUTTON[variant]}>
       {link.label}
     </SmartLink>
   );

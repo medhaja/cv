@@ -203,3 +203,20 @@ The two OG images (1200×630) are rendered at build time by static route handler
 - **Case study:** "Isocline — a durable runtime for agent workflows" above the approved run-approval crop, in a browser frame that bleeds off the bottom edge.
 - **Never in a share image:** the dashboard screenshot and the approval-JSON panel.
 - Each page sets its own `og:image`, `og:url` and `twitter:card=summary_large_image`. The deploy guard fails if either image is missing.
+
+## Analytics and consent
+
+Analytics run only in production builds (`lib/analytics.ts`, `components/analytics/`). Both scripts are injected after the page is interactive (window load, then idle), so neither blocks rendering.
+
+- **GoatCounter** (`medhaja.goatcounter.com`): cookieless and always on. It loads with `no_onload`, and each path is counted explicitly: once on first load and once per client-side route change. Hash jumps don't count, and the first load is never counted twice.
+- **Google Tag Manager `GTM-TDCVKN4Z`** (carries GA4) loads only after Accept.
+  - Consent Mode v2 defaults (all denied) are pushed before the tag loads. Accept grants `analytics_storage` only; ad storage stays denied.
+  - The first page view comes from the GA4 tag. Route changes push `virtual_page_view` (`page_path`, `page_location`, `page_title`).
+  - Events: `file_download` (résumé), `outbound_click` (GitHub, LinkedIn, YouTube) and `email_click` (`method`: `mailto` | `copy`).
+  - Events are pushed only while consent is granted, so nothing is replayed into GTM after a later Accept.
+- **Banner:**
+  - Placement: bottom-left on wider screens, full width on mobile.
+  - Content: mono "cookies" label and two equal secondary buttons. It's a labelled region, not a modal, with no focus trap.
+  - It stays hidden while it would overlap an element marked `data-consent-avoid` (hero CTAs, case-study actions).
+  - The choice is stored in `localStorage` (`medhaja.consent.v1`). Footer "Cookie settings" reopens the banner and moves focus into it. Decline also removes `_ga*` cookies.
+- The deploy guard allows third-party scripts only from `gc.zgo.at` and `www.googletagmanager.com`, over https.
