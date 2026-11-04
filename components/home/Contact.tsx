@@ -43,7 +43,7 @@ export function Contact() {
               {site.links.resume && (
                 <li>
                   <a className="link" href={site.links.resume}>
-                    Résumé
+                    Résumé<span className="sr-only"> (PDF)</span>
                   </a>
                 </li>
               )}

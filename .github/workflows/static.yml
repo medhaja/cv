@@ -51,6 +51,24 @@ jobs:
             exit 1
           fi
 
+          # Allowlist of file types. Anything else is unexpected and blocks the deploy.
+          unexpected=$(find out -type f ! \( -name '*.html' -o -name '*.txt' -o -name '*.js' -o -name '*.css' \
+                    -o -name '*.woff2' -o -name '*.png' -o -name '*.jpg' -o -name '*.webp' -o -name '*.svg' \
+                    -o -name '*.ico' -o -name '*.xml' -o -path 'out/CNAME' -o -path 'out/.nojekyll' \
+                    -o -path 'out/resume/Medhaja-H-L-Resume.pdf' \) -print)
+          if [ -n "$unexpected" ]; then
+            echo "::error::Refusing to deploy. Unexpected files in out/:"
+            echo "$unexpected"
+            exit 1
+          fi
+          # Exactly one document may be published: the résumé PDF.
+          extra_docs=$(find out -type f \( -iname '*.pdf' -o -iname '*.doc*' \) ! -path 'out/resume/Medhaja-H-L-Resume.pdf' -print)
+          if [ -n "$extra_docs" ]; then
+            echo "::error::Only out/resume/Medhaja-H-L-Resume.pdf may be published:"
+            echo "$extra_docs"
+            exit 1
+          fi
+
           # Custom domain must survive the deploy.
           test "$(tr -d '[:space:]' < out/CNAME)" = "medhaja.me" || { echo "::error::out/CNAME missing or wrong"; exit 1; }
           test -f out/.nojekyll || { echo "::error::out/.nojekyll missing"; exit 1; }

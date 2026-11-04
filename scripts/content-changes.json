@@ -80,13 +80,13 @@
     "2026-11-04 Videos": "Interviewer Bot \"Demo video\" and Isocline \"Tutorial video\" links (plain links, no embeds)",
     "2026-11-04 Section markers": "Marker row shares the label row; Work shows \"Work / Featured product\"",
     "2026-11-04 Provider wording": "\"any model\" → \"multiple model providers or any OpenAI-compatible endpoint\" (case study lead, Who it's for); feature title \"Any model:\" → \"Multiple model providers:\"",
-    "2026-11-04 Decision 03": "\"Waiting holds no worker\" → \"Waiting without occupying a worker\""
+    "2026-11-04 Decision 03": "\"Waiting holds no worker\" → \"Waiting without occupying a worker\"",
+    "2026-11-05 Résumé": "Approved PDF published at /resume/Medhaja-H-L-Resume.pdf; Résumé links shown in hero and contact (no longer forbidden)"
   },
   "forbidden": {
     "out/index.html": [
       "70%",
       "Data Scientist",
-      "Résumé",
       "Apr 2023 – Oct 2024",
       "Alphabet",
       "Google (Alphabet",

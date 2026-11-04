@@ -42,11 +42,8 @@ export const site = {
     isoclineQuickstart: "https://github.com/medhaja/isocline/blob/main/docs/quickstart.md",
     isoclineRelease: "https://github.com/medhaja/isocline/releases/latest",
     isoclineArchitecture: "https://github.com/medhaja/isocline/blob/main/docs/architecture.md",
-    /**
-     * Résumé PDF. Hidden while null. Enable with "/resume/Medhaja-H-L-Resume.pdf" once a
-     * PDF without a phone number and without the 70% cost figure is in public/resume/.
-     */
-    resume: null as string | null,
+    /** Résumé PDF (checked: no phone number, no 70% figure). */
+    resume: "/resume/Medhaja-H-L-Resume.pdf" as string | null,
   },
   copyright: "© 2026 Medhaja H L",
   nav: [

@@ -49,7 +49,9 @@ export function Hero() {
               ))}
               {site.links.resume && (
                 <li>
-                  <TextLink link={{ label: "Résumé", href: site.links.resume }} />
+                  <a className="link" href={site.links.resume}>
+                    Résumé<span className="sr-only"> (PDF)</span>
+                  </a>
                 </li>
               )}
             </ul>
