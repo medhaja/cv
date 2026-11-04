@@ -7,6 +7,8 @@ import { CopyEmail } from "@/components/CopyEmail";
 import { ArchitectureDiagram } from "@/components/case/ArchitectureDiagram";
 import { ProgressNav } from "@/components/case/ProgressNav";
 import { PageTransition } from "@/components/motion/PageTransition";
+import { JsonLd } from "@/components/JsonLd";
+import { isoclineLd } from "@/content/structured-data";
 
 export const metadata: Metadata = {
   title: seo.isocline.title,
@@ -26,6 +28,8 @@ export const metadata: Metadata = {
 export default function IsoclineCaseStudy() {
   const [primary, secondary, ...textLinks] = cs.actions;
   return (
+    <>
+    <JsonLd data={isoclineLd} />
     <PageTransition>
     <article aria-labelledby="cs-title">
       {/* ------------------------------ Hero ------------------------------ */}
@@ -306,6 +310,7 @@ export default function IsoclineCaseStudy() {
       </section>
     </article>
     </PageTransition>
+    </>
   );
 }
 

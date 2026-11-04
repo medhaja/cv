@@ -7,6 +7,8 @@ import { About } from "@/components/home/About";
 import { Contact } from "@/components/home/Contact";
 import { seo, site } from "@/content/site";
 import { PageTransition } from "@/components/motion/PageTransition";
+import { JsonLd } from "@/components/JsonLd";
+import { personLd } from "@/content/structured-data";
 
 export const metadata: Metadata = {
   title: seo.home.title,
@@ -25,6 +27,8 @@ export const metadata: Metadata = {
 
 export default function Home() {
   return (
+    <>
+    <JsonLd data={personLd} />
     <PageTransition>
       <Hero />
       <Work />
@@ -33,5 +37,6 @@ export default function Home() {
       <About />
       <Contact />
     </PageTransition>
+    </>
   );
 }
