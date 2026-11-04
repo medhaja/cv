@@ -27,7 +27,7 @@ export default function IsoclineCaseStudy() {
   return (
     <article aria-labelledby="cs-title">
       {/* ------------------------------ Hero ------------------------------ */}
-      <header className="pb-16 pt-12 md:pb-24 md:pt-20">
+      <header className="pb-16 pt-10 md:pb-24 md:pt-14">
         <Container>
           <div className="grid grid-cols-1 gap-x-6 gap-y-6 md:grid-cols-12">
             <div className="flex flex-col gap-4 md:col-span-3">
@@ -44,7 +44,7 @@ export default function IsoclineCaseStudy() {
             </div>
           </div>
 
-          <dl className="mt-14 grid grid-cols-1 border-t border-line sm:grid-cols-2 lg:grid-cols-4">
+          <dl className="mt-10 grid grid-cols-1 border-t border-line sm:grid-cols-2 lg:grid-cols-4 md:mt-12">
             {cs.meta.map((m) => (
               <div key={m.label} className="border-b border-line py-5 sm:pr-6 lg:border-b-0">
                 <Label as="dt">{m.label}</Label>
@@ -53,7 +53,7 @@ export default function IsoclineCaseStudy() {
             ))}
           </dl>
 
-          <div className="mt-10 flex flex-wrap items-center gap-x-6 gap-y-4">
+          <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-4">
             <Button link={primary} />
             <Button link={secondary} variant="secondary" />
             {textLinks.map((l) => (
@@ -62,7 +62,7 @@ export default function IsoclineCaseStudy() {
           </div>
 
           {/* Lead image: the demonstrated workflow, paused at human approval */}
-          <figure className="mt-14 md:mt-20">
+          <figure className="mt-10 md:mt-12">
             <ShotPanel shot={runShot} priority />
             <figcaption className="mt-4 font-mono text-small text-fg-subtle">{runShot.caption}</figcaption>
           </figure>

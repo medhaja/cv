@@ -1,6 +1,7 @@
 import { capabilities } from "@/content/site";
 import { Section } from "../ui";
 import { SmartLink } from "../SmartLink";
+import { LiftCard } from "../motion/LiftCard";
 
 /** 5 cards: 3 + 2 on desktop (6-col sub-grid: 2/2/2 then 3/3). */
 const spans = ["lg:col-span-2", "lg:col-span-2", "lg:col-span-2", "lg:col-span-3", "lg:col-span-3"];
@@ -10,7 +11,7 @@ export function Capabilities() {
     <Section id="capabilities" index="04" path="/capabilities" label={capabilities.label} title={capabilities.title}>
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-6">
         {capabilities.items.map((c, i) => (
-          <div
+          <LiftCard
             key={c.title}
             className={`panel flex flex-col p-6 md:p-8 ${spans[i]} ${i === 4 ? "sm:col-span-2 lg:col-span-3" : ""}`}
           >
@@ -34,7 +35,7 @@ export function Capabilities() {
                 ))}
               </ul>
             </div>
-          </div>
+          </LiftCard>
         ))}
       </div>
     </Section>

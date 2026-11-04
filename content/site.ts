@@ -87,11 +87,12 @@ export const seo = {
  * Run header, stats row and canvas only; no approval JSON, no inspector panel.
  */
 export const runShot = {
-  png: "/img/isocline/run-approval-1600.png",
+  png: "/img/isocline/run-approval-1460.png",
   webp960: "/img/isocline/run-approval-960.webp",
-  webp1600: "/img/isocline/run-approval-1600.webp",
-  width: 1600,
-  height: 618,
+  /** Native crop width: no upscaled export. */
+  webpLarge: "/img/isocline/run-approval-1460.webp",
+  width: 1460,
+  height: 564,
   urlBar: "Isocline",
   alt: "Isocline desktop app: a research workflow where specialist agents run in parallel, merge their outputs, and wait at a human-approval step before generating a report.",
   caption: "A demo run paused at the human-approval step.",
@@ -101,7 +102,7 @@ export const runShot = {
 export const dashboardShot = {
   png: "/img/isocline/dashboard-1600.png",
   webp960: "/img/isocline/dashboard-960.webp",
-  webp1600: "/img/isocline/dashboard-1600.webp",
+  webpLarge: "/img/isocline/dashboard-1600.webp",
   width: 1600,
   height: 792,
   urlBar: "localhost:3000/dashboard",
@@ -149,7 +150,7 @@ export const isocline = {
     },
     {
       label: "Who it’s for",
-      text: "Developers and teams who want to compose agent workflows visually and run them on their own infrastructure with any model provider. A Windows desktop build and 53 ready-to-run templates also make it usable by individuals.",
+      text: "Developers and teams who want to compose agent workflows visually and run them on their own infrastructure with multiple model providers or any OpenAI-compatible endpoint. A Windows desktop build and 53 ready-to-run templates also make it usable by individuals.",
     },
     {
       label: "My role",
@@ -170,13 +171,13 @@ export const isocline = {
     ["Human-in-the-loop waits", "(approval, timer, callback, event) that hold no worker"],
     ["Saga-style compensation", "that undoes side effects in reverse order"],
     ["Sandboxed Python", "in disposable, network-less containers"],
-    ["Any model:", "OpenAI, Anthropic, Gemini, OpenRouter, Ollama and OpenAI-compatible servers"],
+    ["Multiple model providers:", "OpenAI, Anthropic, Gemini, OpenRouter, Ollama and OpenAI-compatible servers"],
     ["MCP tools, RAG on pgvector", ", webhook and schedule triggers, REST API, Python SDK and CLI"],
   ] as [string, string][],
   /**
    * Proof tiles. Only numbers that appear in the content:
    * 53 templates, 233 tests, 10/10 durability scenarios (release-3.3.0
-   * verification record) and 6 provider types listed under "Any model".
+   * verification record) and 6 provider types listed under "Multiple model providers".
    */
   stats: [
     { value: "53", label: "ready-to-run templates", source: "src: docs/verification/release-3.3.0.txt" },
@@ -487,7 +488,7 @@ export const caseStudy = {
   crumb: { label: "← Back to work", href: "/#work" },
   eyebrow: "Case study · Isocline",
   title: "A durable runtime for agent workflows, with a visual builder on top.",
-  lead: "Isocline is an open-source, self-hosted control plane for agent workflows. You compose a workflow on a canvas, run it with any model, and the runtime keeps it correct through crashes, restarts, slow human approvals and failed side effects.",
+  lead: "Isocline is an open-source, self-hosted control plane for agent workflows. You compose a workflow on a canvas, run it with multiple model providers or any OpenAI-compatible endpoint, and the runtime keeps it correct through crashes, restarts, slow human approvals and failed side effects.",
   meta: [
     { label: "Role", value: "Creator and developer" },
     { label: "Type", value: "Open-source product · Apache-2.0" },
@@ -610,7 +611,7 @@ export const caseStudy = {
         tradeoff: "Execution is at-least-once per node. A node that was running when its worker died runs again, so side-effecting tools must be idempotent or declare compensation.",
       },
       {
-        title: "Waiting holds no worker",
+        title: "Waiting without occupying a worker",
         body: "Approvals, timers, callbacks and events persist a wait state and release the worker. A conditional update resumes the run, so concurrent resumes cannot fire twice.",
         tradeoff: "A node paused for a tool-call approval re-runs from its start once approved, repeating its model calls.",
       },

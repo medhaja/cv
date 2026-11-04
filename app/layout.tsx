@@ -5,6 +5,7 @@ import { GeistMono } from "geist/font/mono";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { GridLines } from "@/components/GridLines";
+import { MotionProvider } from "@/components/motion/MotionProvider";
 import { seo, site } from "@/content/site";
 import "./globals.css";
 
@@ -40,13 +41,15 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           Skip to content
         </a>
         <GridLines />
-        <div className="relative z-10">
-          <Header />
-          <main id="main" tabIndex={-1} className="outline-none">
-            {children}
-          </main>
-          <Footer />
-        </div>
+        <MotionProvider>
+          <div className="relative z-10">
+            <Header />
+            <main id="main" tabIndex={-1} className="outline-none">
+              {children}
+            </main>
+            <Footer />
+          </div>
+        </MotionProvider>
       </body>
     </html>
   );

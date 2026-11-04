@@ -19,3 +19,6 @@ isocline_screenshot.png
 # Other local tooling
 .github/hooks/impeccable.json
 .impeccable/
+
+# Résumé PDF: not published yet (never commit)
+resume/

@@ -31,7 +31,9 @@ export function SmartLink({ href, external, children, arrow = true, ...rest }: P
       </a>
     );
   }
-  const isRoute = href.startsWith("/") && !href.startsWith("/#") && !/\.\w+$/.test(href);
+  // Internal routes, including cross-page hashes like "/#work", use next/link (client
+  // navigation + page transition). Same-page hashes are intercepted by MotionProvider.
+  const isRoute = href.startsWith("/") && !/\.\w+$/.test(href.split("#")[0]);
   if (isRoute) {
     return (
       <Link href={href} {...rest}>

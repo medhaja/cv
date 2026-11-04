@@ -2,6 +2,7 @@ import { dashboardShot, earlierWork, isocline, runShot, selectedWork, work } fro
 import { Rich } from "../Rich";
 import { Button, Label, Section, ShotPanel, Tag, TextLink } from "../ui";
 import { SmartLink } from "../SmartLink";
+import { LiftCard } from "../motion/LiftCard";
 
 export function Work() {
   return (
@@ -151,7 +152,7 @@ function SelectedWork() {
           {selectedWork.projects.map((p) => {
             const links = p.links.filter((l): l is { label: string; href: string; external?: boolean } => !!l.href);
             return (
-              <article key={p.id} id={p.id} aria-labelledby={`${p.id}-title`} className="panel scroll-mt-24 p-6 md:p-8">
+              <LiftCard as="article" key={p.id} id={p.id} aria-labelledby={`${p.id}-title`} className="panel scroll-mt-24 p-6 md:p-8">
                 <p>
                   <Tag>{p.tag}</Tag>
                 </p>
@@ -166,7 +167,7 @@ function SelectedWork() {
                     ))}
                   </div>
                 )}
-              </article>
+              </LiftCard>
             );
           })}
         </div>
@@ -192,7 +193,7 @@ function EarlierWork() {
 
       <div className="mt-12 grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
         {earlierWork.projects.map((p) => (
-          <article key={p.id} id={p.id} aria-labelledby={`${p.id}-title`} className="panel flex scroll-mt-24 flex-col p-6 md:p-8">
+          <LiftCard as="article" key={p.id} id={p.id} aria-labelledby={`${p.id}-title`} className="panel flex scroll-mt-24 flex-col p-6 md:p-8">
             <p>
               <Tag>
                 {p.year} · {p.category}
@@ -216,7 +217,7 @@ function EarlierWork() {
                 <TextLink key={l.href} link={l} />
               ))}
             </div>
-          </article>
+          </LiftCard>
         ))}
       </div>
     </div>

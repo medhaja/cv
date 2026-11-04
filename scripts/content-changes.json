@@ -6,10 +6,14 @@
       "Lead delivery of GenAI applications.": "Experience bullets replaced with owner-supplied text (Nov 2026)",
       "Work across architecture, implementation, evaluation and deployment.": "Experience bullets replaced with owner-supplied text (Nov 2026)",
       "Guide engineers and collaborate with stakeholders.": "Experience bullets replaced with owner-supplied text (Nov 2026)",
-      "Current technical lead role": "Evidence line replaced: \"Technical lead at Biz-Metric\" (owner, Nov 2026)"
+      "Current technical lead role": "Evidence line replaced: \"Technical lead at Biz-Metric\" (owner, Nov 2026)",
+      "Any model:": "Feature title now \"Multiple model providers:\" (owner, Nov 2026)",
+      "Developers and teams who want to compose agent workflows visually and run them on their own infrastructure with any model provider. A Windows desktop build and 53 ready-to-run templates also make it usable by individuals.": "\"any model provider\" → \"multiple model providers or any OpenAI-compatible endpoint\" (owner, Nov 2026)"
     },
     "legacy/isocline.html": {
-      "medhaja.me": "Case-study footer link replaced by the shared footer (GitHub, LinkedIn, Back to top)"
+      "medhaja.me": "Case-study footer link replaced by the shared footer (GitHub, LinkedIn, Back to top)",
+      "Isocline is an open-source, self-hosted control plane for agent workflows. You compose a workflow on a canvas, run it with any model, and the runtime keeps it correct through crashes, restarts, slow human approvals and failed side effects.": "\"run it with any model\" → \"run it with multiple model providers or any OpenAI-compatible endpoint\" (owner, Nov 2026)",
+      "Waiting holds no worker": "Decision 03 retitled \"Waiting without occupying a worker\" (owner, Nov 2026)"
     }
   },
   "added": {
@@ -51,7 +55,9 @@
       "A demo run paused at the human-approval step.",
       "Isocline — demo dashboard",
       "Tutorial video",
-      "Demo video"
+      "Demo video",
+      "Multiple model providers: OpenAI, Anthropic, Gemini, OpenRouter, Ollama and OpenAI-compatible servers",
+      "Developers and teams who want to compose agent workflows visually and run them on their own infrastructure with multiple model providers or any OpenAI-compatible endpoint. A Windows desktop build and 53 ready-to-run templates also make it usable by individuals."
     ],
     "out/isocline/index.html": [
       "Demonstrated workflow",
@@ -59,7 +65,9 @@
       "This is demonstrated functionality, not a customer deployment.",
       "A demo run paused at the human-approval step.",
       "Isocline — demo dashboard",
-      "Tutorial video"
+      "Tutorial video",
+      "Isocline is an open-source, self-hosted control plane for agent workflows. You compose a workflow on a canvas, run it with multiple model providers or any OpenAI-compatible endpoint, and the runtime keeps it correct through crashes, restarts, slow human approvals and failed side effects.",
+      "Waiting without occupying a worker"
     ]
   },
   "changes_log": {
@@ -70,7 +78,9 @@
     "2026-11-04 Résumé": "Links hidden (site.links.resume = null) until an approved PDF is in public/resume/",
     "2026-11-04 Lead image": "Desktop-app run (paused at approval) is the lead image on home and case study; dashboard is secondary (\"Isocline — demo dashboard\")",
     "2026-11-04 Videos": "Interviewer Bot \"Demo video\" and Isocline \"Tutorial video\" links (plain links, no embeds)",
-    "2026-11-04 Section markers": "Marker row shares the label row; Work shows \"Work / Featured product\""
+    "2026-11-04 Section markers": "Marker row shares the label row; Work shows \"Work / Featured product\"",
+    "2026-11-04 Provider wording": "\"any model\" → \"multiple model providers or any OpenAI-compatible endpoint\" (case study lead, Who it's for); feature title \"Any model:\" → \"Multiple model providers:\"",
+    "2026-11-04 Decision 03": "\"Waiting holds no worker\" → \"Waiting without occupying a worker\""
   },
   "forbidden": {
     "out/index.html": [
@@ -79,14 +89,16 @@
       "Résumé",
       "Apr 2023 – Oct 2024",
       "Alphabet",
-      "Google (Alphabet"
+      "Google (Alphabet",
+      "any model"
     ],
     "out/isocline/index.html": [
       "70%",
       "Alphabet",
       "Data Scientist",
-      "Google (Alphabet"
+      "Google (Alphabet",
+      "any model"
     ]
   },
-  "_forbidden_note": "Google itself is allowed (Google Kubernetes Engine); the demo run's company analysis (Google/Alphabet) must never appear."
+  "_forbidden_note": "Google itself is allowed (Google Kubernetes Engine); the demo run's company analysis (Google/Alphabet) must never appear. Forbidden strings are matched case-insensitively."
 }

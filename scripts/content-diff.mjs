@@ -52,7 +52,8 @@ process.exitCode = unexpected ? 1 : 0;
 // Strings that must NOT appear (owner rules, e.g. no 70% cost figure; hidden links stay hidden).
 for (const [file, list] of Object.entries(changes.forbidden ?? {})) {
   const t = norm(text(readFileSync(file, "utf8")));
-  const found = list.filter((s) => t.includes(s));
+  const lower = t.toLowerCase();
+  const found = list.filter((s) => lower.includes(s.toLowerCase()));
   console.log(`\n## forbidden strings in ${file}: ${found.length} found`);
   found.forEach((s) => console.log(`    ✗ present: "${s}"`));
   if (found.length) process.exitCode = 1;

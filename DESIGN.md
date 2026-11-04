@@ -103,10 +103,19 @@ The principle is that motion explains state and never decorates. Everything move
 | `dur-reveal` | 800ms | Scroll reveals |
 | `stagger` | 80ms | Sibling reveals |
 
-- **Scroll reveals** (GSAP ScrollTrigger) fade from 0 to 1 and rise 16px. Each element plays once and is not re-triggered on scroll-up.
-- **Smooth scroll** uses Lenis with `lerp 0.1`. It is disabled under reduced motion and for keyboard anchor jumps.
-- **Hover** changes border and colour only. Cards do not scale. Links change their underline colour. Hovering a graph node raises its label.
-- **Page transitions** (Framer Motion) are a 300ms cross-fade with an 8px rise. No wipes and no curtains.
+- **Scroll reveals** (GSAP ScrollTrigger) fade from 0 to 1 and rise 16px, over 0.8s with `expo.out`. Each element plays once and is not re-triggered on scroll-up. Rules:
+  - Only content that starts below the fold is hidden, so nothing visible on load blinks out. Without JavaScript, everything is visible.
+  - Elements already scrolled past when their batch fires (after an anchor jump or a fast scroll) appear instantly, so on-screen content never waits behind them.
+  - Stagger is 80ms per element, capped at 0.4s total.
+  - Only `opacity` and `transform` are animated.
+- **Smooth scroll** uses Lenis with `lerp 0.1`, driven by GSAP's ticker so ScrollTrigger and Lenis share one clock. It is off under reduced motion. Anchor rules:
+  - Same-page anchor links scroll smoothly. Offsets come from CSS (`scroll-padding-top` 72px plus section `scroll-margin`), which Lenis honours exactly as native anchors do.
+  - Afterwards focus moves to the target and the hash updates. The hash is pushed only after the scroll, because Next's patched `pushState` would interrupt Lenis mid-flight.
+  - The skip link is left native.
+  - Cross-page hashes (`/#work` from the case study) use client navigation with the page transition, then land on the section instantly.
+- **Hover:** cards lift 2px with a `transform`-only Framer Motion tween (150ms) and change border colour. They never scale. Under reduced motion there is no lift, only the border change. Links change their underline colour. Hovering a graph node raises its label.
+- **Current section (home nav):** the item for the section under a reading line 35% down the viewport gets `aria-current` and a 1px amber underline, which slides between items via a Framer Motion `layoutId`. Capabilities has no nav item, so nothing is highlighted there.
+- **Page transitions** (Framer Motion, `app/template.tsx`) are a 300ms fade with an 8px rise on client navigation between home and the case study. The first page load is never animated, so content isn't hidden at SSR and LCP isn't delayed. Reduced motion turns them off. No wipes and no curtains.
 - **Loader.** A mono `booting runtime…` line with a 3-step tick (`claim → load → ready`). It finishes in under 900ms and shows only on the first visit in a session.
 - **Cursor.** On desktop pointers only, an 8px ring that lerps behind the pointer. It becomes a mono label (`open ↗`, `copy`) over actionable elements. The native cursor stays visible, so this adds to it and never replaces it.
 - **`prefers-reduced-motion`.** No smooth scroll, no reveals (content is visible immediately), the 3D graph is replaced by a static SVG, the architecture diagram shows all layers lit with no travelling packet, and the loader and custom cursor are off.

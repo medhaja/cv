@@ -1,17 +1,18 @@
 import { contact, site } from "@/content/site";
 import { Label, Section } from "../ui";
 import { CopyEmail } from "../CopyEmail";
+import { LiftCard } from "../motion/LiftCard";
 
 export function Contact() {
   return (
     <Section id="contact" index="07" path="/contact" label={contact.label} title={contact.title}>
       <div className="grid grid-cols-1 gap-4 md:grid-cols-12">
         {contact.paths.map((p) => (
-          <div key={p.label} className="panel p-6 md:col-span-6 md:p-8 lg:col-span-5 lg:first:col-start-4 lg:last:col-span-4">
+          <LiftCard key={p.label} className="panel p-6 md:col-span-6 md:p-8 lg:col-span-5 lg:first:col-start-4 lg:last:col-span-4">
             <Label as="p">{p.label}</Label>
             <h3 className="mt-5 text-heading font-medium">{p.title}</h3>
             <p className="mt-3 text-fg-muted">{p.text}</p>
-          </div>
+          </LiftCard>
         ))}
       </div>
 

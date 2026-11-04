@@ -127,7 +127,7 @@ export function BrowserFrame({
   priority = false,
   sizes = "(min-width: 1280px) 1200px, 100vw",
 }: {
-  shot: { png: string; webp960: string; webp1600: string; width: number; height: number; alt: string; urlBar: string };
+  shot: { png: string; webp960: string; webpLarge: string; width: number; height: number; alt: string; urlBar: string };
   priority?: boolean;
   sizes?: string;
 }) {
@@ -142,7 +142,7 @@ export function BrowserFrame({
         <code>{shot.urlBar}</code>
       </div>
       <picture>
-        <source type="image/webp" srcSet={`${shot.webp960} 960w, ${shot.webp1600} 1600w`} sizes={sizes} />
+        <source type="image/webp" srcSet={`${shot.webp960} 960w, ${shot.webpLarge} ${shot.width}w`} sizes={sizes} />
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={shot.png}
