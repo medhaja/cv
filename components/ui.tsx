@@ -23,10 +23,12 @@ export function Button({ link, variant = "primary" }: { link: LinkT; variant?: "
   );
 }
 
-export function TextLink({ link, className = "" }: { link: LinkT; className?: string }) {
+/** `context` is appended for screen readers only, so repeated labels ("Source", "Demo video") stay distinguishable. */
+export function TextLink({ link, className = "", context }: { link: LinkT; className?: string; context?: string }) {
   return (
     <SmartLink href={link.href} external={link.external} className={`link ${className}`}>
       {link.label}
+      {context && <span className="sr-only">: {context}</span>}
     </SmartLink>
   );
 }

@@ -163,7 +163,7 @@ function SelectedWork() {
                 {links.length > 0 && (
                   <div className="mt-8 flex gap-6 font-mono text-small">
                     {links.map((l) => (
-                      <TextLink key={l.href} link={l} />
+                      <TextLink key={l.href} link={l} context={p.title} />
                     ))}
                   </div>
                 )}
@@ -214,7 +214,7 @@ function EarlierWork() {
             </dl>
             <div className="mt-auto flex gap-6 pt-8 font-mono text-small">
               {p.links.map((l) => (
-                <TextLink key={l.href} link={l} />
+                <TextLink key={l.href} link={l} context={p.title} />
               ))}
             </div>
           </LiftCard>
