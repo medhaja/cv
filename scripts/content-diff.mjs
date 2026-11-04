@@ -1,6 +1,8 @@
 // Word-diff check: every sentence of the legacy pages must appear in the new build.
 // Usage: npm run build && node scripts/content-diff.mjs
-import { readFileSync } from "node:fs";
+// legacy/ was deleted after the final check (Stage 6); its text nodes are frozen in
+// scripts/legacy-baseline.json. `--snapshot` rewrites that file from legacy/ (only if it exists).
+import { existsSync, readFileSync, writeFileSync } from "node:fs";
 
 const text = (html) =>
   html
@@ -22,12 +24,24 @@ const pairs = [
   ["legacy/index.html", "out/index.html"],
   ["legacy/isocline.html", "out/isocline/index.html"],
 ];
+const BASELINE = "scripts/legacy-baseline.json";
+if (process.argv.includes("--snapshot")) {
+  const snap = Object.fromEntries(pairs.map(([a]) => [a, [...new Set(segments(readFileSync(a, "utf8")))]]));
+  writeFileSync(BASELINE, JSON.stringify(snap, null, 2) + "\n");
+  console.log(`wrote ${BASELINE}`);
+  process.exit(0);
+}
+const baseline = existsSync(BASELINE) ? JSON.parse(readFileSync(BASELINE, "utf8")) : {};
+/** Legacy text nodes: from legacy/ while it exists, otherwise from the frozen baseline. */
+const legacySegments = (a) => (existsSync(a) ? [...new Set(segments(readFileSync(a, "utf8")))] : baseline[a] ?? []);
 const changes = JSON.parse(readFileSync("scripts/content-changes.json", "utf8"));
 let unexpected = 0;
 for (const [a, b] of pairs) {
   const newText = norm(text(readFileSync(b, "utf8")));
   const allowed = changes.removed[a] ?? {};
-  const lost = [...new Set(segments(readFileSync(a, "utf8")))].filter((s) => !newText.includes(s));
+  const legacy = legacySegments(a);
+  if (!legacy.length) throw new Error(`No legacy text for ${a}: restore ${BASELINE}`);
+  const lost = legacy.filter((s) => !newText.includes(s));
   const expected = lost.filter((s) => s in allowed);
   const surprise = lost.filter((s) => !(s in allowed));
   unexpected += surprise.length;

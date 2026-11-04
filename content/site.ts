@@ -2,7 +2,7 @@
  * Content layer: the single source of truth for all copy on medhaja.me.
  *
  * Wording is copied verbatim from the previous site (legacy/index.html and
- * legacy/isocline.html). Inline markup in strings is limited to:
+ * legacy/isocline.html, now frozen in scripts/legacy-baseline.json). Inline markup in strings is limited to:
  *   **bold**   `code`   [link text](href)
  * and is rendered by components/Rich.tsx.
  *
