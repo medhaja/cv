@@ -55,6 +55,10 @@ jobs:
           test "$(tr -d '[:space:]' < out/CNAME)" = "medhaja.me" || { echo "::error::out/CNAME missing or wrong"; exit 1; }
           test -f out/.nojekyll || { echo "::error::out/.nojekyll missing"; exit 1; }
           test -f out/index.html && test -f out/isocline/index.html || { echo "::error::expected pages missing"; exit 1; }
+          # Build-time OG images must exist (pages reference them in og:image).
+          test -s out/og/home.png && test -s out/og/isocline.png || { echo "::error::OG images missing"; exit 1; }
+          # Font source files are build inputs only.
+          if find out -iname '*.ttf' | grep -q .; then echo "::error::raw .ttf in out/"; exit 1; fi
           echo "Guard passed: $(find out -type f | wc -l) files"
 
       - name: Set up Pages

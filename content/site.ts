@@ -74,11 +74,20 @@ export const seo = {
     jsonLdDescription:
       "Open-source control plane and durable execution harness for production AI agents.",
   },
-  ogImage: {
-    src: "/img/isocline/og-isocline.png",
-    width: 1200,
-    height: 630,
-    alt: "The Isocline dashboard showing recent workflow runs, token usage and models in use.",
+  /** Build-time OG images (app/og/*.png/route.tsx → out/og/*.png). */
+  ogImages: {
+    home: {
+      url: "/og/home.png",
+      width: 1200,
+      height: 630,
+      alt: "Medhaja H L. I build AI products from idea to deployment. GenAI Technical Lead, Bengaluru. Shown over an illustration of an agent workflow paused at a human-approval step.",
+    },
+    isocline: {
+      url: "/og/isocline.png",
+      width: 1200,
+      height: 630,
+      alt: "Isocline, a durable runtime for agent workflows, above a demo run paused at the human-approval step.",
+    },
   },
 } as const;
 

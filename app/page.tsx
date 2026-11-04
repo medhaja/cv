@@ -6,6 +6,7 @@ import { Capabilities } from "@/components/home/Capabilities";
 import { About } from "@/components/home/About";
 import { Contact } from "@/components/home/Contact";
 import { seo, site } from "@/content/site";
+import { PageTransition } from "@/components/motion/PageTransition";
 
 export const metadata: Metadata = {
   title: seo.home.title,
@@ -17,20 +18,20 @@ export const metadata: Metadata = {
     title: seo.home.title,
     description: seo.home.ogDescription,
     url: "/",
-    images: [seo.ogImage.src],
+    images: [seo.ogImages.home],
   },
-  twitter: { card: "summary_large_image", title: seo.home.title, description: seo.home.ogDescription },
+  twitter: { card: "summary_large_image", title: seo.home.title, description: seo.home.ogDescription, images: [seo.ogImages.home] },
 };
 
 export default function Home() {
   return (
-    <>
+    <PageTransition>
       <Hero />
       <Work />
       <Experience />
       <Capabilities />
       <About />
       <Contact />
-    </>
+    </PageTransition>
   );
 }

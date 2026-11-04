@@ -6,6 +6,7 @@ import { SmartLink } from "@/components/SmartLink";
 import { CopyEmail } from "@/components/CopyEmail";
 import { ArchitectureDiagram } from "@/components/case/ArchitectureDiagram";
 import { ProgressNav } from "@/components/case/ProgressNav";
+import { PageTransition } from "@/components/motion/PageTransition";
 
 export const metadata: Metadata = {
   title: seo.isocline.title,
@@ -17,14 +18,15 @@ export const metadata: Metadata = {
     title: seo.isocline.title,
     description: seo.isocline.ogDescription,
     url: "/isocline/",
-    images: [seo.ogImage.src],
+    images: [seo.ogImages.isocline],
   },
-  twitter: { card: "summary_large_image", title: seo.isocline.title, description: seo.isocline.ogDescription },
+  twitter: { card: "summary_large_image", title: seo.isocline.title, description: seo.isocline.ogDescription, images: [seo.ogImages.isocline] },
 };
 
 export default function IsoclineCaseStudy() {
   const [primary, secondary, ...textLinks] = cs.actions;
   return (
+    <PageTransition>
     <article aria-labelledby="cs-title">
       {/* ------------------------------ Hero ------------------------------ */}
       <header className="pb-16 pt-10 md:pb-24 md:pt-14">
@@ -146,7 +148,7 @@ export default function IsoclineCaseStudy() {
                       <summary className="flex cursor-pointer list-none items-start gap-4 p-5 md:p-6">
                         <span className="pt-0.5 font-mono text-small text-fg-subtle">{String(i + 1).padStart(2, "0")}</span>
                         <span className="flex-1 text-body font-medium text-fg">{d.title}</span>
-                        <span aria-hidden="true" className="mt-0.5 font-mono text-fg-subtle transition-transform duration-300 group-open:rotate-45">
+                        <span aria-hidden="true" className="mt-0.5 font-mono text-fg-subtle transition-transform duration-200 group-open:rotate-45">
                           +
                         </span>
                       </summary>
@@ -303,6 +305,7 @@ export default function IsoclineCaseStudy() {
         </Container>
       </section>
     </article>
+    </PageTransition>
   );
 }
 

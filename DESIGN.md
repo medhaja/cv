@@ -113,12 +113,17 @@ The principle is that motion explains state and never decorates. Everything move
   - Afterwards focus moves to the target and the hash updates. The hash is pushed only after the scroll, because Next's patched `pushState` would interrupt Lenis mid-flight.
   - The skip link is left native.
   - Cross-page hashes (`/#work` from the case study) use client navigation with the page transition, then land on the section instantly.
-- **Hover:** cards lift 2px with a `transform`-only Framer Motion tween (150ms) and change border colour. They never scale. Under reduced motion there is no lift, only the border change. Links change their underline colour. Hovering a graph node raises its label.
-- **Current section (home nav):** the item for the section under a reading line 35% down the viewport gets `aria-current` and a 1px amber underline, which slides between items via a Framer Motion `layoutId`. Capabilities has no nav item, so nothing is highlighted there.
-- **Page transitions** (Framer Motion, `app/template.tsx`) are a 300ms fade with an 8px rise on client navigation between home and the case study. The first page load is never animated, so content isn't hidden at SSR and LCP isn't delayed. Reduced motion turns them off. No wipes and no curtains.
-- **Loader.** A mono `booting runtime…` line with a 3-step tick (`claim → load → ready`). It finishes in under 900ms and shows only on the first visit in a session.
-- **Cursor.** On desktop pointers only, an 8px ring that lerps behind the pointer. It becomes a mono label (`open ↗`, `copy`) over actionable elements. The native cursor stays visible, so this adds to it and never replaces it.
-- **`prefers-reduced-motion`.** No smooth scroll, no reveals (content is visible immediately), the 3D graph is replaced by a static SVG, the architecture diagram shows all layers lit with no travelling packet, and the loader and custom cursor are off.
+- **Hover and focus.** Every interactive element has a visible hover state and the global `:focus-visible` style (2px amber outline, 2px offset). Hover timing is 150–200ms throughout.
+  - Cards (`.lift`, CSS only) lift 2px with a `transform` transition (200ms, ease-out) and get a stronger border. They never scale. Under reduced motion, or without a hover-capable pointer, there is no lift, only the border change.
+  - Text links change their underline to amber. Buttons change fill or border. The wordmark turns amber. The mobile menu label brightens.
+  - Case-study decision cards strengthen their border, and the summary row darkens to ink-850. Their focus outline sits inset, following the card radius.
+  - Hovering a graph node raises its label.
+- **Current section (home nav):** the item for the section under a reading line 35% down the viewport gets `aria-current` and a 1px amber underline. The underline draws in from the left with a `scaleX` transition (200ms, CSS). Capabilities has no nav item, so nothing is highlighted there.
+- **Page transitions** use the View Transitions API through React `<ViewTransition>` (`components/motion/PageTransition.tsx`, wrapping each page): a 300ms cross-fade on client navigation between home and the case study. The header is anchored (`view-transition-name: site-header`) and doesn't fade. Route navigations are the only trigger, so the first page load never animates. Unsupported browsers swap instantly. Reduced motion removes the animation.
+- **Loader.** No full-screen loader. While the 3D chunk loads, a small mono `booting runtime…` label sits at the bottom-left of the hero graph area. It fades out (300ms) when the canvas renders its first frame. The name, headline and CTAs render immediately. It never shows in static mode, including under reduced motion.
+- **No custom cursor.** The native cursor is used everywhere.
+- **JavaScript budget.** Framer Motion is not used. GSAP (core and ScrollTrigger only) and Lenis load in a separate chunk after hydration (`components/motion/motion-runtime.ts`), so they are not in the initial JS. The three/R3F scene is its own lazy chunk.
+- **`prefers-reduced-motion`.** No smooth scroll, no reveals (content is visible immediately), the 3D graph is replaced by a static SVG, the architecture diagram shows all layers lit with no travelling packet, and the loader never shows.
 
 ## 6. The 3D workflow graph: visual language
 
@@ -189,3 +194,12 @@ The diagram is an SVG with five horizontal tiers: Clients, API, State, Execution
 ## 8. Voice in the UI
 
 The copy comes verbatim from the current site. UI chrome (labels, loader, log lines) is terse and lowercase in mono, like system output. It contains no exclamation marks, no buzzwords and no invented numbers.
+
+## Share images (Stage 5)
+
+The two OG images (1200×630) are rendered at build time by static route handlers: `app/og/home.png/route.tsx` and `app/og/isocline.png/route.tsx` produce `out/og/home.png` and `out/og/isocline.png`. Nothing is generated at runtime. Fonts come from local TTFs: Instrument Serif in `assets/fonts` (OFL, licence alongside) and Geist from the `geist` package.
+
+- **Home:** name, headline, "GenAI Technical Lead · Bengaluru" and `medhaja.me`. The motif is the static workflow graph paused at approval (`components/og/graph-svg.ts`, same geometry as the hero SVG).
+- **Case study:** "Isocline — a durable runtime for agent workflows" above the approved run-approval crop, in a browser frame that bleeds off the bottom edge.
+- **Never in a share image:** the dashboard screenshot and the approval-JSON panel.
+- Each page sets its own `og:image`, `og:url` and `twitter:card=summary_large_image`. The deploy guard fails if either image is missing.

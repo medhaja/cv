@@ -160,10 +160,21 @@
     font-weight: 500;
     font-size: 0.8125rem;
     letter-spacing: 0.18em;
+    transition: color var(--duration-fast) ease;
+  }
+  .brand:hover {
+    color: var(--color-signal);
   }
   .nav-toggle {
     min-height: 2.75rem;
     padding: 0 0.25rem;
+  }
+  .nav-toggle .label {
+    transition: color var(--duration-fast) ease;
+  }
+  .nav-toggle:hover .label,
+  .nav-toggle[aria-expanded="true"] .label {
+    color: var(--color-fg);
   }
   .nav-links {
     display: flex;
@@ -180,6 +191,27 @@
   .nav-links a:hover,
   .nav-links a[aria-current="true"] {
     color: var(--color-fg);
+  }
+  /* Current-section underline (md+): amber 1px rule that draws in from the left. */
+  @media (min-width: 768px) {
+    .nav-links a {
+      position: relative;
+    }
+    .nav-links a::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0.625rem;
+      height: 1px;
+      background: var(--color-signal);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform var(--duration-hover) var(--ease-out);
+    }
+    .nav-links a[aria-current="true"]::after {
+      transform: scaleX(1);
+    }
   }
   @media (max-width: 767px) {
     .nav-links {
@@ -242,6 +274,20 @@
     background: var(--color-ink-900);
     border: 1px solid var(--color-line);
     border-radius: var(--radius-md);
+  }
+
+  /* Card hover: 2px lift + stronger border, 200ms ease-out. No lift under reduced motion. */
+  .lift {
+    transition: transform var(--duration-hover) var(--ease-out), border-color var(--duration-hover) var(--ease-out);
+  }
+  .lift:hover,
+  .lift:focus-within {
+    border-color: var(--color-line-strong);
+  }
+  @media (hover: hover) and (prefers-reduced-motion: no-preference) {
+    .lift:hover {
+      transform: translateY(-2px);
+    }
   }
 
   /* Browser frame */
@@ -381,4 +427,54 @@
 }
 .decision > summary::marker {
   content: "";
+}
+.decision {
+  transition: border-color var(--duration-hover) var(--ease-out);
+}
+.decision > summary {
+  border-radius: calc(var(--radius-md) - 1px);
+  transition: background-color var(--duration-hover) var(--ease-out);
+}
+.decision:hover {
+  border-color: var(--color-line-strong);
+}
+.decision > summary:hover {
+  background: var(--color-ink-850);
+}
+.decision[open] > summary {
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+/* Page transition (View Transitions API via React <ViewTransition>): 300ms cross-fade
+   between routes. The header is anchored and does not fade. Unsupported browsers swap
+   instantly; first load never animates (only route navigations are transitions). */
+::view-transition {
+  pointer-events: none;
+}
+::view-transition-old(.page-fade),
+::view-transition-new(.page-fade) {
+  animation-duration: var(--duration-base);
+  animation-timing-function: var(--ease-out);
+}
+::view-transition-group(site-header) {
+  animation: none;
+  z-index: 100;
+}
+::view-transition-old(site-header) {
+  display: none;
+}
+::view-transition-new(site-header) {
+  animation: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(*),
+  ::view-transition-new(*),
+  ::view-transition-group(*) {
+    animation: none !important;
+  }
+}
+.decision > summary:focus-visible {
+  outline-offset: -2px;
+  border-radius: calc(var(--radius-md) - 1px);
 }

@@ -135,6 +135,14 @@ export function HeroGraph() {
             <GraphStatic size="narrow" className="md:hidden" />
             <GraphStatic size="wide" className="hidden md:block" />
           </div>
+          {/* Loader: only while the 3D chunk loads and before its first frame; never in static mode. */}
+          {show3d && (
+            <span
+              className={`absolute bottom-0 left-0 font-mono text-[11px] leading-none text-fg-subtle transition-opacity duration-300 ${ready ? "opacity-0" : "opacity-100"}`}
+            >
+              booting runtime…
+            </span>
+          )}
         </div>
       </div>
     </>

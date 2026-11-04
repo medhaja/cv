@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { site } from "@/content/site";
 
@@ -63,7 +62,7 @@ export function Header() {
   }, [open]);
 
   return (
-    <header className="site-header">
+    <header className="site-header" style={{ viewTransitionName: "site-header" }}>
       <nav aria-label="Primary" className="mx-auto flex h-14 w-full max-w-site items-center justify-between px-5 md:px-10">
         <Link href="/" className="brand" onClick={() => setOpen(false)}>
           {site.brand}
@@ -87,14 +86,6 @@ export function Header() {
                 <Link href={item.href} aria-current={on ? "true" : undefined} onClick={() => setOpen(false)}>
                   {item.label}
                 </Link>
-                {on && (
-                  <motion.span
-                    layoutId="nav-current"
-                    aria-hidden="true"
-                    className="absolute inset-x-0 bottom-2.5 hidden h-px bg-signal md:block"
-                    transition={{ type: "tween", duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-                  />
-                )}
               </li>
             );
           })}
