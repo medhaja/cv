@@ -4,16 +4,18 @@
  * - GoatCounter: cookieless, always on. Loaded with `no_onload`, and every page
  *   view is counted explicitly via `countPage()`: once for the first load and once
  *   per client-side route change, so the first load is never double counted.
- * - Google Tag Manager (GTM-TDCVKN4Z, which carries GA4): loaded only after the
- *   visitor accepts. Consent Mode v2 defaults are set before the tag loads; Accept
- *   grants analytics_storage only (ad_* stay denied). Events are pushed only while
- *   consent is granted, so nothing collected before consent is replayed into GTM.
+ * - GA4 via gtag.js (G-C296B435DT): loaded only after the visitor accepts.
+ *   Consent Mode v2 defaults are set before the tag loads; Accept grants
+ *   analytics_storage only (ad_* stay denied). Automatic page views are off
+ *   (send_page_view: false): one page_view is sent when GA starts (first load
+ *   after consent) and one per client-side route change; hash jumps send none.
+ *   Events are sent only while consent is granted.
  */
 
 export const GOATCOUNTER_ENDPOINT = "https://medhaja.goatcounter.com/count";
 export const GOATCOUNTER_SRC = "https://gc.zgo.at/count.js";
-export const GTM_ID = "GTM-TDCVKN4Z";
-export const GTM_SRC = `https://www.googletagmanager.com/gtm.js?id=${GTM_ID}`;
+export const GA_ID = "G-C296B435DT";
+export const GA_SRC = `https://www.googletagmanager.com/gtag/js?id=${GA_ID}`;
 
 export const enabled = process.env.NODE_ENV === "production";
 
@@ -43,8 +45,8 @@ export function setConsent(v: Consent) {
   } catch {
     /* storage unavailable: the choice lasts for this page view only */
   }
-  if (v === "granted") loadGtm();
-  else revokeGtm();
+  if (v === "granted") loadGa();
+  else revokeGa();
 }
 
 /* ----------------------------- GoatCounter ---------------------------- */
@@ -84,9 +86,9 @@ export function countPage(path: string) {
   else gcQueue.push(path);
 }
 
-/* --------------------------------- GTM -------------------------------- */
+/* --------------------------------- GA4 -------------------------------- */
 
-let gtmLoaded = false;
+let gaLoaded = false;
 
 /** Google's gtag(): pushes the Arguments object itself, exactly like the official snippet. */
 function gtag(..._args: unknown[]): void;
@@ -95,13 +97,21 @@ function gtag() {
   (window.dataLayer = window.dataLayer || []).push(arguments);
 }
 
-export function loadGtm() {
+const pageParams = (path: string, title?: string) => ({
+  page_location: location.origin + path,
+  page_path: path,
+  ...(title ? { page_title: title } : {}),
+});
+
+/** Start GA (or resume it after a re-accept) and send a page view for the current page. */
+export function loadGa() {
   if (!enabled) return;
-  if (gtmLoaded) {
+  if (gaLoaded) {
     gtag("consent", "update", { analytics_storage: "granted" });
+    gtag("event", "page_view", pageParams(location.pathname, document.title));
     return;
   }
-  gtmLoaded = true;
+  gaLoaded = true;
   window.dataLayer = window.dataLayer || [];
   // Consent Mode v2: defaults first, before the tag loads.
   gtag("consent", "default", {
@@ -113,16 +123,17 @@ export function loadGtm() {
   // Accept grants analytics only; ads stay denied.
   gtag("consent", "update", { analytics_storage: "granted" });
   gtag("js", new Date());
-  // Standard GTM start event (fires the container's Initialization / All Pages triggers).
-  window.dataLayer.push({ "gtm.start": Date.now(), event: "gtm.js" });
+  gtag("config", GA_ID, { send_page_view: false });
+  // First page view after consent (queued in dataLayer until gtag.js arrives).
+  gtag("event", "page_view", pageParams(location.pathname, document.title));
   const s = document.createElement("script");
   s.async = true;
-  s.src = GTM_SRC;
+  s.src = GA_SRC;
   document.head.appendChild(s);
 }
 
-function revokeGtm() {
-  if (gtmLoaded) gtag("consent", "update", { analytics_storage: "denied" });
+function revokeGa() {
+  if (gaLoaded) gtag("consent", "update", { analytics_storage: "denied" });
   // Remove GA cookies set while consent was granted.
   try {
     const host = location.hostname;
@@ -138,22 +149,23 @@ function revokeGtm() {
   }
 }
 
-/** Push a GTM event, only while consent is granted and the container is loaded. */
+/** Send a GA4 event, only while consent is granted and GA is loaded. */
 export function track(event: string, params: Record<string, unknown> = {}) {
-  if (!enabled || !gtmLoaded || currentConsent() !== "granted") return;
-  window.dataLayer?.push({ event, ...params });
+  if (!enabled || !gaLoaded || currentConsent() !== "granted") return;
+  gtag("event", event, params);
 }
 
-/** Client-side route change (the first page view is sent by the GA4 tag itself). */
-export function trackVirtualPageView(path: string) {
+/** Client-side route change (the first page view after consent is sent by loadGa). */
+export function trackPageView(path: string) {
   // The route commits slightly before Next updates the URL and <title>: wait (up to
-  // ~4s, as Next also waits for the View Transition) for the URL to match, then read the title. If the visitor has
-  // already moved on, send the hit without a title rather than with the wrong one.
+  // ~4s, as Next also waits for the View Transition) for the URL to match, then read
+  // the title. If the visitor has already moved on, send the hit without a title
+  // rather than with the wrong one.
   const start = performance.now();
   const send = () => {
     const settled = location.pathname === path && document.title !== "";
     if (!settled && performance.now() - start < 4000) return void window.setTimeout(send, 50);
-    track("virtual_page_view", { page_path: path, page_location: location.origin + path, ...(settled ? { page_title: document.title } : {}) });
+    track("page_view", pageParams(path, settled ? document.title : undefined));
   };
   window.setTimeout(send, 0);
 }

@@ -8,8 +8,6 @@ export function Work() {
   return (
     <Section
       id="work"
-      index="02"
-      path="/work"
       label={work.label}
       sublabel={work.title}
       aside={

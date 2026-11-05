@@ -289,7 +289,7 @@ export default function IsoclineCaseStudy() {
 
       {/* ------------------------------ CTA ------------------------------- */}
       <section aria-labelledby="cta-title" className="section mt-8">
-        <MarkerRow index="07" path="/contact">
+        <MarkerRow>
           {cs.cta.label}
         </MarkerRow>
         <Container className="mt-6 md:mt-8">
@@ -314,15 +314,11 @@ export default function IsoclineCaseStudy() {
   );
 }
 
-/** Case-study section: rule + marker row (§0n left, path right), heading 24px / 32px below. */
-function CsSection({ n, id, title, children }: { n: string; id: string; title: string; children: React.ReactNode }) {
+/** Case-study section: full-width rule, heading 40px / 48px below (the rule's row carried only coordinates, now removed). */
+function CsSection({ id, title, children }: { id: string; title: string; children: React.ReactNode }) {
   return (
-    <section id={id} aria-labelledby={`${id}-title`} className="scroll-mt-20 pb-16 md:pb-24">
-      <div className="flex items-baseline justify-between border-t border-line py-3 font-mono text-[0.6875rem] tracking-[0.06em] text-fg-subtle">
-        <span>§{n}</span>
-        <span aria-hidden="true">/{id}</span>
-      </div>
-      <h2 id={`${id}-title`} className="mt-6 font-display text-display-md md:mt-8">
+    <section id={id} aria-labelledby={`${id}-title`} className="scroll-mt-20 border-t border-line pb-16 md:pb-24">
+      <h2 id={`${id}-title`} className="mt-10 font-display text-display-md md:mt-12">
         {title}
       </h2>
       <div className="mt-10">{children}</div>

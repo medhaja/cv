@@ -5,7 +5,7 @@ import { SmartLink } from "../SmartLink";
 export function About() {
   return (
     <>
-      <Section id="about" index="05" path="/about" label={about.label} title={about.title}>
+      <Section id="about" label={about.label} title={about.title}>
         <div className="grid grid-cols-1 gap-x-6 md:grid-cols-12">
           <div className="prose-body max-w-[64ch] text-lead text-fg-muted md:col-span-8 md:col-start-4">
             {about.paragraphs.map((p) => (
@@ -15,7 +15,7 @@ export function About() {
         </div>
       </Section>
 
-      <Section id="education" index="06" path="/background" label={background.label} title={background.title}>
+      <Section id="education" label={background.label} title={background.title}>
         <div className="grid grid-cols-1 gap-x-6 gap-y-14 md:grid-cols-12">
           <div className="md:col-span-3">
             <Label as="h3">{background.education.label}</Label>

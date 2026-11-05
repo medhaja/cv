@@ -69,8 +69,8 @@ jobs:
             exit 1
           fi
 
-          # Third-party scripts: only GoatCounter and Google Tag Manager, and only over https.
-          ALLOWED_SCRIPT_HOSTS="gc.zgo.at www.googletagmanager.com"
+          # Third-party scripts (*.js URLs): only GoatCounter, and only over https.
+          ALLOWED_SCRIPT_HOSTS="gc.zgo.at"
           script_hosts=$(grep -rhoE "(https?:)?//[a-zA-Z0-9.-]+\.[a-z]{2,}/[^\"' )\`]*\.js\b" out --include='*.html' --include='*.js' \
                          | sed -E 's#^(https?:)?//([^/]+).*#\1//\2#' | sort -u || true)
           for h in $script_hosts; do
@@ -84,6 +84,19 @@ jobs:
             esac
           done
           echo "Third-party script hosts: ${script_hosts:-none}"
+
+          # Google: only GA4 gtag.js (https://www.googletagmanager.com/gtag/js); no Tag Manager container.
+          google_urls=$(grep -rhoE "(https?:)?//[a-zA-Z0-9.-]*googletagmanager\.com[^\"' )\`]*" out --include='*.html' --include='*.js' | sort -u || true)
+          bad_google=$(printf '%s\n' "$google_urls" | grep -v '^https://www\.googletagmanager\.com/gtag/js?id=' | grep . || true)
+          if [ -n "$bad_google" ]; then
+            echo "::error::Only https://www.googletagmanager.com/gtag/js is allowed from Google:"
+            echo "$bad_google"
+            exit 1
+          fi
+          if grep -rqE "GTM-[A-Z0-9]{6,}" out --include='*.html' --include='*.js'; then
+            echo "::error::A Google Tag Manager container ID is in out/"; exit 1
+          fi
+          echo "Google script URLs: ${google_urls:-none}"
 
           # Custom domain must survive the deploy.
           test "$(tr -d '[:space:]' < out/CNAME)" = "medhaja.me" || { echo "::error::out/CNAME missing or wrong"; exit 1; }

@@ -5,7 +5,7 @@ import { LiftCard } from "../motion/LiftCard";
 
 export function Contact() {
   return (
-    <Section id="contact" index="07" path="/contact" label={contact.label} title={contact.title}>
+    <Section id="contact" label={contact.label} title={contact.title}>
       <div className="grid grid-cols-1 gap-4 md:grid-cols-12">
         {contact.paths.map((p) => (
           <LiftCard key={p.label} className="panel p-6 md:col-span-6 md:p-8 lg:col-span-5 lg:first:col-start-4 lg:last:col-span-4">
