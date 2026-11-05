@@ -297,7 +297,7 @@ export const experience = {
   label: "Experience",
   title: "Where I’ve worked",
   /** Added at the owner's request (Jun 2021 – present, minus a gap ≈ 5y2m). */
-  stat: { value: "5+", label: "years industry experience" },
+  stat: { value: "5+", label: "years of industry experience" },
   /** Owner-supplied bullets (Nov 2026). Generic client descriptions only: no client names, data or prompts. */
   roles: [
     {

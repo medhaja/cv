@@ -28,7 +28,7 @@
       "Developed NLP question-answering solutions and PySpark data-processing workflows, and worked on Docker and Kubernetes deployments.",
       "Analyst",
       "5+",
-      "years industry experience",
+      "years of industry experience",
       "vLLM on GKE at Infinite Computer Solutions",
       "Technical lead at Biz-Metric",
       "Isocline’s product scope",
@@ -86,7 +86,8 @@
     "2026-11-04 Provider wording": "\"any model\" → \"multiple model providers or any OpenAI-compatible endpoint\" (case study lead, Who it's for); feature title \"Any model:\" → \"Multiple model providers:\"",
     "2026-11-04 Decision 03": "\"Waiting holds no worker\" → \"Waiting without occupying a worker\"",
     "2026-11-05 Résumé": "Approved PDF published at /resume/Medhaja-H-L-Resume.pdf; Résumé links shown in hero and contact (no longer forbidden)",
-    "2026-11-05 Analytics": "Footer privacy note and \"Cookie settings\" control (GoatCounter always on, cookieless; GA4 via GTM only after consent). Banner text is client-rendered, so it is not in the static HTML."
+    "2026-11-05 Analytics": "Footer privacy note and \"Cookie settings\" control (GoatCounter always on, cookieless; GA4 via GTM only after consent). Banner text is client-rendered, so it is not in the static HTML.",
+    "2026-11-05 Experience stat": "\"years industry experience\" → \"years of industry experience\" (owner)"
   },
   "forbidden": {
     "out/index.html": [
@@ -95,7 +96,8 @@
       "Apr 2023 – Oct 2024",
       "Alphabet",
       "Google (Alphabet",
-      "any model"
+      "any model",
+      "years industry experience"
     ],
     "out/isocline/index.html": [
       "70%",
