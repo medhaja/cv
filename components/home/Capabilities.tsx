@@ -8,7 +8,7 @@ const spans = ["lg:col-span-2", "lg:col-span-2", "lg:col-span-2", "lg:col-span-3
 
 export function Capabilities() {
   return (
-    <Section id="capabilities" index="04" path="/capabilities" label={capabilities.label} title={capabilities.title}>
+    <Section id="capabilities" label={capabilities.label} title={capabilities.title}>
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-6">
         {capabilities.items.map((c, i) => (
           <LiftCard

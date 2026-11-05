@@ -37,14 +37,12 @@ export function TextLink({ link, className = "", context }: { link: LinkT; class
 }
 
 /**
- * Section frame: full-width rule carrying one row — mono coordinate (left) and
- * section label (right) — then, 24px / 32px below, the asymmetric 3 / 9 grid
- * (aside column + heading column). Bottom padding separates sections.
+ * Section frame: full-width rule carrying one row — the section label, in the
+ * left column — then, 24px / 32px below, the asymmetric 3 / 9 grid (aside
+ * column + heading column). Bottom padding separates sections.
  */
 export function Section({
   id,
-  index,
-  path,
   label,
   sublabel,
   title,
@@ -54,8 +52,6 @@ export function Section({
   head,
 }: {
   id: string;
-  index: string;
-  path: string;
   label: string;
   /** Optional second label on the same row, e.g. "Work / Featured product". */
   sublabel?: string;
@@ -69,7 +65,7 @@ export function Section({
   const tid = titleId ?? `${id}-title`;
   return (
     <section id={id} aria-labelledby={title ? tid : `${id}-label`} className="section">
-      <MarkerRow index={index} path={path}>
+      <MarkerRow>
         <span id={`${id}-label`}>{label}</span>
         {sublabel && (
           <>
@@ -99,19 +95,12 @@ export function Section({
   );
 }
 
-/**
- * The rule + one row: coordinate (left, decorative) and the section label
- * (right on mobile; content column on desktop). Shared by both pages.
- */
-export function MarkerRow({ index, path, children }: { index: string; path: string; children?: ReactNode }) {
+/** The full-width rule + one row carrying the section label, left-aligned (the 3-col aside column on desktop). */
+export function MarkerRow({ children }: { children: ReactNode }) {
   return (
     <div className="border-t border-line">
-      <Container className="grid grid-cols-[auto_1fr] items-baseline gap-x-6 py-3 md:grid-cols-12">
-        <span aria-hidden="true" className="flex gap-5 font-mono text-[0.6875rem] tracking-[0.06em] text-fg-subtle md:col-span-3">
-          <span>§{index}</span>
-          <span>{path}</span>
-        </span>
-        {children && <p className="label text-right md:col-span-9 md:text-left">{children}</p>}
+      <Container className="py-3">
+        <p className="label">{children}</p>
       </Container>
     </div>
   );

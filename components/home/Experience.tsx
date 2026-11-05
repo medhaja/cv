@@ -5,8 +5,6 @@ export function Experience() {
   return (
     <Section
       id="experience"
-      index="03"
-      path="/experience"
       label={experience.label}
       title={experience.title}
       aside={

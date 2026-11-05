@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 export default function NotFound() {
   return (
     <section aria-labelledby="nf-title" className="section pt-16 md:pt-24">
-      <MarkerRow index="404" path="/not-found">
+      <MarkerRow>
         Not found
       </MarkerRow>
       <Container className="mt-6 md:mt-8">

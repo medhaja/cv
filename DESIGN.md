@@ -66,7 +66,7 @@ Headings never exceed 14 words per line. Serif headlines are left-aligned, never
 ## 3. Spacing, radius, grid
 
 **Spacing.** A 4px base, used through Tailwind's default `--spacing: 0.25rem`. The rhythm steps are 4 · 8 · 12 · 16 · 24 · 32 · 48 · 64 · 96 · 128 · 160.
-- **Section structure (revised Nov 2026).** Each section opens with a full-width `line` rule that carries one row: the mono coordinate (`§02 /work`) on the left and the section label on the right (on desktop, in the content column). The heading row follows **32px** below on desktop and **24px** on mobile. Sections are separated by bottom padding of 160px on desktop and 96px on mobile. Gaps between section heads and content are 48 / 64px. A section can carry a second label on the same row ("Work / Featured product").
+- **Section structure (revised Nov 2026).** Each section opens with a full-width `line` rule that carries one row: the section label, left-aligned in the 3-column aside position. *(Revised Nov 2026: the `§NN /anchor` coordinates were removed from every section; the label moved into the left column.)* Case-study sections have no label, so they open with the rule alone and the heading 40 / 48px below it. On the home page the heading row follows **32px** below on desktop and **24px** on mobile. Sections are separated by bottom padding of 160px on desktop and 96px on mobile. Gaps between section heads and content are 48 / 64px. A section can carry a second label on the same row ("Work / Featured product").
 - Card padding is 24px on mobile and 32px on desktop.
 
 **Radius.** Engineered and nearly square.
@@ -77,7 +77,7 @@ Headings never exceed 14 words per line. Serif headlines are left-aligned, never
 
 **Grid**
 - 12 columns, max content width 1280px, gutter 24px, outer margin 20px (mobile) to 40px (desktop).
-- **Visible grid as texture.** Two faint vertical `line` rules frame the content area (in the outer half-gutter) for the full page height. *(Revised in Stage 1: inner column rules at 3 / 9 cut through body text and doubled card borders.)* Section boundaries get a full-width horizontal `line` with a small mono coordinate at the left, for example `§02 · /work`.
+- **Visible grid as texture.** Two faint vertical `line` rules frame the content area (in the outer half-gutter) for the full page height. *(Revised in Stage 1: inner column rules at 3 / 9 cut through body text and doubled card borders.)* Section boundaries get a full-width horizontal `line`; the section label (if any) sits at its left.
 - Layout is asymmetric. Labels and section numbers sit in columns 1–3, content in 4–12 (Linear and Stripe docs pattern). On mobile everything stacks to one column with the label above.
 
 **Borders over shadows.** Elevation is a 1px `line` border plus a background step (`ink-900` → `ink-850`). No drop shadows, except the browser-frame screenshot, which gets a single long, soft `0 40px 80px -40px rgb(0 0 0 / 0.6)`.
@@ -209,14 +209,14 @@ The two OG images (1200×630) are rendered at build time by static route handler
 Analytics run only in production builds (`lib/analytics.ts`, `components/analytics/`). Both scripts are injected after the page is interactive (window load, then idle), so neither blocks rendering.
 
 - **GoatCounter** (`medhaja.goatcounter.com`): cookieless and always on. It loads with `no_onload`, and each path is counted explicitly: once on first load and once per client-side route change. Hash jumps don't count, and the first load is never counted twice.
-- **Google Tag Manager `GTM-TDCVKN4Z`** (carries GA4) loads only after Accept.
-  - Consent Mode v2 defaults (all denied) are pushed before the tag loads. Accept grants `analytics_storage` only; ad storage stays denied.
-  - The first page view comes from the GA4 tag. Route changes push `virtual_page_view` (`page_path`, `page_location`, `page_title`).
-  - Events: `file_download` (résumé), `outbound_click` (GitHub, LinkedIn, YouTube) and `email_click` (`method`: `mailto` | `copy`).
-  - Events are pushed only while consent is granted, so nothing is replayed into GTM after a later Accept.
+- **GA4 via gtag.js (`G-C296B435DT`)** loads only after Accept. There is no Tag Manager container.
+  - Consent Mode v2 defaults (all denied) are set before the tag loads. Accept grants `analytics_storage` only; ad storage stays denied.
+  - `gtag('config', 'G-C296B435DT', { send_page_view: false })`. Page views are sent explicitly with `gtag('event', 'page_view', { page_location, page_path, page_title })`: once when GA starts after consent, and once per client-side route change. Hash jumps send none.
+  - Events: `file_download` (résumé), `outbound_click` (GitHub, LinkedIn, YouTube) and `email_click` (`method`: `mailto` | `copy`), sent with `gtag('event', …)` only while consent is granted.
+  - GA4 Enhanced measurement has history page changes, outbound clicks and file downloads turned off, so nothing is counted twice.
 - **Banner:**
   - Placement: bottom-left on wider screens, full width on mobile.
   - Content: mono "cookies" label and two equal secondary buttons. It's a labelled region, not a modal, with no focus trap.
   - It stays hidden while it would overlap an element marked `data-consent-avoid` (hero CTAs, case-study actions).
   - The choice is stored in `localStorage` (`medhaja.consent.v1`). Footer "Cookie settings" reopens the banner and moves focus into it. Decline also removes `_ga*` cookies.
-- The deploy guard allows third-party scripts only from `gc.zgo.at` and `www.googletagmanager.com`, over https.
+- The deploy guard allows third-party scripts only from `gc.zgo.at` and `https://www.googletagmanager.com/gtag/js`, and fails on any Tag Manager container (`gtm.js`, `GTM-` IDs).
