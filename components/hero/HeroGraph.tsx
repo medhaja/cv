@@ -45,13 +45,28 @@ export function HeroGraph() {
       setMode(ok ? "3d" : "static");
       if (!ok) setReady(false);
     };
+    // Boot the 3D chunk only after the hero intro has played (page loaded + ~1.8s) and the
+    // main thread is idle, so parsing three.js never stalls the headline/CTA reveal.
+    // The static SVG is already on screen, so nothing visibly changes while we wait.
+    let timer = 0;
+    let idle = 0;
     const ric = window.requestIdleCallback ?? ((cb: () => void) => window.setTimeout(cb, 200));
-    const handle = ric(decide);
+    const schedule = () => {
+      timer = window.setTimeout(() => {
+        idle = ric(decide, { timeout: 3000 }) as number;
+      }, 1800);
+    };
+    if (document.readyState === "complete") schedule();
+    else window.addEventListener("load", schedule, { once: true });
     const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
     mq.addEventListener("change", decide);
     return () => {
-      if (window.cancelIdleCallback) window.cancelIdleCallback(handle as number);
-      else window.clearTimeout(handle as number);
+      window.removeEventListener("load", schedule);
+      window.clearTimeout(timer);
+      if (idle) {
+        if (window.cancelIdleCallback) window.cancelIdleCallback(idle);
+        else window.clearTimeout(idle);
+      }
       mq.removeEventListener("change", decide);
     };
   }, []);

@@ -57,7 +57,7 @@ export function Hero() {
             {hero.availability}
           </p>
 
-          <div className="hero-fade mt-8 flex flex-wrap items-center gap-x-6 gap-y-5" style={{ ["--d" as string]: 4 }} data-consent-avoid>
+          <div className="hero-fade hero-late mt-8 flex flex-wrap items-center gap-x-6 gap-y-5" data-consent-avoid>
             <div className="flex flex-wrap gap-3">
               <Button link={hero.ctas[0]} />
               <Button link={hero.ctas[1]} variant="secondary" />
