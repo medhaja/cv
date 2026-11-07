@@ -228,7 +228,7 @@ export function ArchitectureDiagram() {
             <span className="text-fg-subtle">Request path: Clients → API → State → Execution → Effects</span>
           ) : (
             <>
-              <span className="tabular mr-3 text-fg-subtle">{hop >= 0 ? `${hop + 1}/${L.wide.hops.length}` : "—"}</span>
+              <span className="tabular mr-3 text-fg-subtle">{hop >= 0 ? `${hop + 1}/${L.wide.hops.length}` : "—"}</span>{" "}
               <span className={hop >= 0 ? "text-fg" : "text-fg-subtle"}>{caption ?? "…"}</span>
             </>
           )}
@@ -241,7 +241,7 @@ export function ArchitectureDiagram() {
             className="btn btn-secondary min-h-9 px-3 font-mono text-[0.75rem]"
           >
             {playing ? "pause" : "play"}
-            <span className="sr-only"> the request-flow animation</span>
+            <span className="sr-only">{"\u00a0"}the request-flow animation</span>
           </button>
         )}
       </div>
@@ -314,18 +314,20 @@ function Svg({
 
       {/* tier labels + connector captions */}
       <g fontFamily="var(--font-mono), ui-monospace, monospace" fontSize={wide ? 11 : 10} letterSpacing="0.08em" fill="#83838c">
-        {L.tierLabels.map((t) => (
+        {L.tierLabels.map((t) => [
           <text key={t.text} x={t.x} y={t.y}>
             {t.text.toUpperCase()}
-          </text>
-        ))}
+          </text>,
+          " ",
+        ])}
       </g>
       <g fontFamily="var(--font-mono), ui-monospace, monospace" fontSize={wide ? 11 : 10} fill="#83838c">
-        {L.connectors.map((c) => (
+        {L.connectors.map((c) => [
           <text key={c.text} x={c.x} y={c.y} textAnchor={c.anchor}>
             {c.anchor === "end" ? `${c.text} ↓` : `↓ ${c.text}`}
-          </text>
-        ))}
+          </text>,
+          " ",
+        ])}
       </g>
 
       {/* nodes */}
@@ -347,14 +349,14 @@ function Svg({
             />
             <text x={n.x + 14} y={n.y + 22} fontSize={wide ? 13 : 12.5} fontWeight={500} fill="#ededef" fontFamily="var(--font-sans), system-ui, sans-serif">
               {n.title}
-            </text>
+            </text>{" "}
             <text fontFamily="var(--font-mono), ui-monospace, monospace" fontSize={wide ? 11 : 10} fill="#83838c">
               {n.lines.map((line, i) => (
                 <tspan key={i} x={n.x + 14} y={n.y + 22 + (wide ? 17 : 16) + i * (wide ? 15 : 14)}>
-                  {line}
+                  {line}{" "}
                 </tspan>
               ))}
-            </text>
+            </text>{" "}
           </g>
         );
       })}

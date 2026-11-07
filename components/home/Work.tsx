@@ -50,6 +50,9 @@ export function Work() {
   );
 }
 
+const ARCH_LINK = { label: "Read the architecture", href: "/isocline/#architecture" };
+const DRAWING_LINK = { label: "Open the interactive drawing", href: "/teardown/isocline.html" };
+
 function Isocline() {
   const [caseStudy, repo, ...textLinks] = isocline.links;
   return (
@@ -110,13 +113,9 @@ function Isocline() {
             Every tier as its own plate. PostgreSQL holds the authoritative state, so Redis can be lost without losing a run.
           </span>{" "}
           <span className="mt-2 block font-mono text-[0.6875rem] text-fg-subtle">Concept drawing. Sizes are illustrative.</span>
-          <span className="mt-6 flex flex-col items-start gap-2 font-mono text-small">
-            <a className="link inline-flex min-h-6 items-center" href="/teardown/isocline.html">
-              Open the interactive drawing
-            </a>
-            <SmartLink className="link inline-flex min-h-6 items-center" href="/isocline/#architecture" arrow={false}>
-              Read the architecture
-            </SmartLink>
+          <span className="mt-6 flex flex-wrap items-start gap-3 md:flex-col">
+            <Button link={ARCH_LINK} />
+            <Button link={DRAWING_LINK} variant="secondary" />
           </span>
         </figcaption>
         <div className="glow-card overflow-hidden md:col-span-9 [background:radial-gradient(60%_60%_at_45%_45%,rgb(255_181_71/0.07),transparent_70%),var(--color-ink-950)]">
@@ -196,6 +195,7 @@ function Isocline() {
 
       {/* Links */}
       <div className="mt-10 flex flex-wrap items-center gap-x-6 gap-y-4">
+        <Button link={ARCH_LINK} variant="secondary" />
         <Button link={repo} variant="secondary" />
         {textLinks.map((l) => (
           <TextLink key={l.href} link={l} className="text-small" />
