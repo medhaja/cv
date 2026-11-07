@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Instrument_Serif } from "next/font/google";
+import localFont from "next/font/local";
 import { GeistSans } from "geist/font/sans";
 import { GeistMono } from "geist/font/mono";
 import { Header } from "@/components/Header";
@@ -8,15 +8,19 @@ import { GridLines } from "@/components/GridLines";
 import { MotionProvider } from "@/components/motion/MotionProvider";
 import { Analytics } from "@/components/analytics/Analytics";
 import { ConsentBanner } from "@/components/analytics/ConsentBanner";
+import { Spotlight } from "@/components/fx/Spotlight";
 import { seo, site } from "@/content/site";
 import "./globals.css";
 
-const serif = Instrument_Serif({
-  subsets: ["latin"],
-  weight: "400",
-  style: ["normal", "italic"],
+// Self-hosted (OFL, see assets/fonts/InstrumentSerif-OFL.txt): no Google request at build or runtime.
+const serif = localFont({
+  src: [
+    { path: "../assets/fonts/InstrumentSerif-Regular.woff2", weight: "400", style: "normal" },
+    { path: "../assets/fonts/InstrumentSerif-Italic.woff2", weight: "400", style: "italic" },
+  ],
   variable: "--font-instrument-serif",
   display: "swap",
+  fallback: ["ui-serif", "Georgia", "serif"],
 });
 
 export const metadata: Metadata = {
@@ -55,6 +59,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         {/* Production only; scripts load after the page is interactive. */}
         <Analytics />
         <ConsentBanner />
+        <Spotlight />
+        <div aria-hidden="true" className="grain" />
       </body>
     </html>
   );

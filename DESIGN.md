@@ -220,3 +220,21 @@ Analytics run only in production builds (`lib/analytics.ts`, `components/analyti
   - It stays hidden while it would overlap an element marked `data-consent-avoid` (hero CTAs, case-study actions).
   - The choice is stored in `localStorage` (`medhaja.consent.v1`). Footer "Cookie settings" reopens the banner and moves focus into it. Decline also removes `_ga*` cookies.
 - The deploy guard allows third-party scripts only from `gc.zgo.at` and `https://www.googletagmanager.com/gtag/js`, and fails on any Tag Manager container (`gtm.js`, `GTM-` IDs).
+
+---
+
+## v2 visual layer (Nov 2026 redesign)
+
+The structure, content, motion runtime and 3D graph are unchanged. v2 adds atmosphere and depth on top:
+
+- **Radius** softened: tags 6px, buttons/inputs 10px, cards 18px, CTA panel 28px (tokens in `styles/theme.css`). Screenshots inside frames use 12px.
+- **Hero**: full-viewport, headline in the first screen on every desktop size (2 lines from 1024px). The graph region sits in the right half on `lg+` (`HeroGraph` region classes) with a drifting amber aurora (`.hero-aurora`) and a moving perspective floor (`.hero-floor`). Graph palette brightened (`GraphScene` COLORS). Headline lines rise out of a mask on first paint; "deployment." is italic amber.
+- **Glow cards** (`.glow-card`): a subtle top sheen, plus an amber border and wash that follow the pointer (`components/fx/Spotlight.tsx`, one delegated listener, fine pointers only).
+- **Icons**: Phosphor (duotone, `@phosphor-icons/react/dist/ssr`) in `.icon-tile`s. Logos in the stack marquee come from Simple Icons (CC0), one marquee per page.
+- **Product shots** tilt back in 3D and straighten as they scroll in (CSS scroll-driven `view()` timeline; static where unsupported).
+- **Stats** count up once on first view (`components/fx/CountUp.tsx`); the real value is always in the HTML.
+- **Experience** spine fills with amber as you read (scroll-driven).
+- **Certificates** are cards with thumbnails (`public/img/certs/*.webp`, generated from the originals).
+- **Grain**: a fixed, pointer-events-none noise overlay at 6% opacity.
+- **Fonts**: Instrument Serif is now self-hosted from `assets/fonts` (regular + italic), so builds need no Google Fonts request.
+- Everything that moves is gated behind `prefers-reduced-motion: no-preference`.

@@ -115,7 +115,7 @@ export function HeroGraph() {
       </div>
 
       {/* Graph region (in flow, above the text): the graph is framed to fit here, so it never sits under the copy. */}
-      <div ref={regionWrap} className="pointer-events-none mx-auto mb-6 flex w-full max-w-site flex-1 flex-col px-5 md:mb-14 md:px-10 [@media(max-height:820px)]:md:mb-8" aria-hidden="true">
+      <div ref={regionWrap} className="pointer-events-none mx-auto mb-6 flex w-full max-w-site flex-1 flex-col px-5 md:mb-14 md:px-10 [@media(max-height:820px)]:md:mb-8 lg:absolute lg:right-0 lg:top-[8%] lg:mb-0 lg:h-[56%] lg:w-[44%] xl:w-[50%] lg:max-w-none lg:flex-none [@media(max-height:820px)]:lg:mb-0" aria-hidden="true">
         {/* Run log + readout row (illustrative, not metrics) */}
         <div className="hidden h-14 items-start justify-between font-mono text-[11px] leading-none text-fg-subtle md:flex [@media(max-height:820px)]:h-12">
           <ol className={`flex flex-col gap-1.5 transition-opacity duration-300 ${show3d && ready ? "opacity-100" : "opacity-0"}`}>
@@ -129,7 +129,7 @@ export function HeroGraph() {
           <span ref={(el) => void (overlay.current.readout = el)} className="text-right" />
         </div>
 
-        <div ref={region} className="relative min-h-[120px] flex-1 md:min-h-[clamp(170px,26svh,320px)] md:ml-[calc(25%+18px)] [@media(max-height:820px)]:min-h-[140px]">
+        <div ref={region} className="relative min-h-[120px] flex-1 md:min-h-[clamp(170px,26svh,320px)] md:ml-[calc(25%+18px)] [@media(max-height:820px)]:min-h-[140px] lg:ml-0 lg:min-h-0 [@media(max-height:820px)]:lg:min-h-0">
           {/* Static SVG: SSR placeholder + fallback. Cross-fades out once WebGL has drawn. */}
           <div className={`absolute inset-0 transition-opacity duration-300 ${ready && show3d ? "opacity-0" : "opacity-100"}`}>
             <GraphStatic size="narrow" className="md:hidden" />

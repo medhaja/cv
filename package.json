@@ -11,6 +11,7 @@
     "postbuild": "node scripts/flatten-rsc.mjs"
   },
   "dependencies": {
+    "@phosphor-icons/react": "^2.1.10",
     "@react-three/fiber": "^9.8.2",
     "geist": "^1.9.0",
     "gsap": "^3.15.0",

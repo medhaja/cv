@@ -1,0 +1,24 @@
+{
+  "dependencies": "node_modules",
+  "modelScripts": ["model.js"],
+  "drawings": [{
+    "id": "isocline-stack",
+    "title": "Isocline, layer by layer",
+    "description": "Concept drawing. Isocline's architecture tiers (clients, API, state, execution, effects) drawn as an exploded stack. Sizes are illustrative.",
+    "concept": true,
+    "parts": [
+      {"id": "web-ui", "name": "Web UI (Next.js builder)"},
+      {"id": "sdk-cli", "name": "SDK / CLI / HTTP"},
+      {"id": "fastapi", "name": "FastAPI (compiler, contracts)"},
+      {"id": "postgres", "name": "PostgreSQL + pgvector"},
+      {"id": "redis", "name": "Redis (queue, live events)"},
+      {"id": "workers", "name": "Celery workers"},
+      {"id": "beat", "name": "Beat (sweeper, waits, schedules)"},
+      {"id": "models", "name": "Model providers"},
+      {"id": "tools", "name": "Tools / MCP servers"},
+      {"id": "sandbox", "name": "Python sandbox"}
+    ],
+    "parameters": [{"key": "gap", "label": "Tier gap", "min": 0, "max": 30, "default": 26, "step": 1, "unit": "mm"}],
+    "colors": {"hues": {"postgres": 38}, "fills": ["postgres"]}
+  }]
+}

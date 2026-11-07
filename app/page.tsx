@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Hero } from "@/components/home/Hero";
+import { StackMarquee } from "@/components/fx/StackMarquee";
 import { Work } from "@/components/home/Work";
 import { Experience } from "@/components/home/Experience";
 import { Capabilities } from "@/components/home/Capabilities";
@@ -31,6 +32,7 @@ export default function Home() {
     <JsonLd data={personLd} />
     <PageTransition>
       <Hero />
+      <StackMarquee />
       <Work />
       <Experience />
       <Capabilities />

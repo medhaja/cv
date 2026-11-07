@@ -11,6 +11,7 @@
   --color-fg-subtle: #83838c;
   --color-signal: #ffb547;
   --color-signal-dim: rgb(255 181 71 / 0.14);
+  --color-signal-soft: rgb(255 181 71 / 0.22);
 
   /* Fonts (CSS vars injected by next/font) */
   --font-display: var(--font-instrument-serif), ui-serif, Georgia, serif;
@@ -43,10 +44,11 @@
   --text-stat--line-height: 1;
   --text-stat--letter-spacing: -0.03em;
 
-  /* Radius */
-  --radius-xs: 2px;
-  --radius-sm: 4px;
-  --radius-md: 8px;
+  /* Radius (v2): tags 6px, buttons/inputs 10px, cards 18px, media inside cards 10px. */
+  --radius-xs: 6px;
+  --radius-sm: 10px;
+  --radius-md: 18px;
+  --radius-lg: 28px;
 
   /* Layout */
   --container-site: 80rem; /* 1280px */

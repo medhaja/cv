@@ -109,7 +109,7 @@ export function MarkerRow({ children }: { children: ReactNode }) {
 /** Dashboard screenshot: browser frame on an ink-850 panel. No CSS filters on the image. */
 export function ShotPanel(props: Parameters<typeof BrowserFrame>[0]) {
   return (
-    <div className="rounded-md border border-line bg-ink-850 p-3 sm:p-6 lg:p-12">
+    <div className="rounded-lg border border-line-strong bg-[linear-gradient(180deg,rgb(255_255_255/0.06),rgb(255_255_255/0.01)_45%),var(--color-ink-900)] p-2 shadow-[0_60px_120px_-40px_rgb(0_0_0/0.8),inset_0_1px_0_rgb(255_255_255/0.08)] sm:p-4 lg:p-6">
       <BrowserFrame {...props} />
     </div>
   );
