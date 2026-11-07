@@ -16,8 +16,9 @@ function build(configPath, outputPath) {
     __INTER_LICENSE__: script(read(dependency('@fontsource-variable/inter/LICENSE'))),
     __INTER_FONT__: fs.readFileSync(dependency('@fontsource-variable/inter/files/inter-latin-wght-normal.woff2')).toString('base64'),
     __DRAWING_DATA__: json(config.drawings),
-    __JSPDF__: script(read(dependency('jspdf/dist/jspdf.umd.min.js'))),
-    __SVG2PDF__: script(read(dependency('svg2pdf.js/dist/svg2pdf.umd.min.js'))),
+    // TEARDOWN_NO_PDF=1 leaves the PDF libraries out (they reference third-party CDNs) and removes the PDF button.
+    __JSPDF__: process.env.TEARDOWN_NO_PDF ? script('document.querySelector(\'[data-format="pdf"]\')?.remove();') : script(read(dependency('jspdf/dist/jspdf.umd.min.js'))),
+    __SVG2PDF__: process.env.TEARDOWN_NO_PDF ? '' : script(read(dependency('svg2pdf.js/dist/svg2pdf.umd.min.js'))),
     __WORKER_SOURCE__: json(worker),
     __THEME_SCRIPT__: script(asset('theme.js')),
     __SHEET_SCRIPT__: script(asset('sheet.js')),
