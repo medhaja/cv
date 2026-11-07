@@ -2,6 +2,9 @@ import { capabilities } from "@/content/site";
 import { Section } from "../ui";
 import { SmartLink } from "../SmartLink";
 import { LiftCard } from "../motion/LiftCard";
+import { Icon } from "../Icon";
+
+const ICONS = ["brain", "code", "cloud-arrow-up", "shield-check", "compass"];
 
 /** 5 cards: 3 + 2 on desktop (6-col sub-grid: 2/2/2 then 3/3). */
 const spans = ["lg:col-span-2", "lg:col-span-2", "lg:col-span-2", "lg:col-span-3", "lg:col-span-3"];
@@ -10,12 +13,16 @@ export function Capabilities() {
   return (
     <Section id="capabilities" label={capabilities.label} title={capabilities.title}>
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-6">
-        {capabilities.items.map((c, i) => (
+        {capabilities.items.map((c, i) => {
+          const icon = ICONS[i] ?? "brain";
+          return (
           <LiftCard
             key={c.title}
-            className={`panel flex flex-col p-6 md:p-8 ${spans[i]} ${i === 4 ? "sm:col-span-2 lg:col-span-3" : ""}`}
+            className={`glow-card flex flex-col p-6 md:p-8 ${spans[i]} ${i === 4 ? "sm:col-span-2 lg:col-span-3" : ""}`}
           >
-            <span className="font-mono text-label text-fg-subtle">{String(i + 1).padStart(2, "0")}</span>
+            <span aria-hidden="true" className={`icon-tile ${i === 0 ? "icon-tile--signal" : ""}`}>
+              <Icon name={icon} size={22} />
+            </span>
             <h3 className="mt-6 text-heading font-medium">{c.title}</h3>
             <p className="mb-8 mt-3 text-fg-muted">{c.text}</p>
             <div className="mt-auto border-t border-line pt-5">
@@ -36,7 +43,8 @@ export function Capabilities() {
               </ul>
             </div>
           </LiftCard>
-        ))}
+          );
+        })}
       </div>
     </Section>
   );

@@ -68,17 +68,17 @@ export default function GraphScene({ overlay, region, active, onReady, onLog }: 
 
 const C = {
   pendingFill: new THREE.Color("#141416"),
-  pendingEdge: new THREE.Color("#303035"),
-  doneFill: new THREE.Color("#2a2a2e"),
-  doneEdge: new THREE.Color("#8e8e94"),
+  pendingEdge: new THREE.Color("#4a4a52"),
+  doneFill: new THREE.Color("#26262b"),
+  doneEdge: new THREE.Color("#c4c4ca"),
   signal: new THREE.Color("#ffb547"),
   void: new THREE.Color("#0a0a0b"),
   fg: new THREE.Color("#ededef"),
   muted: new THREE.Color("#83838c"),
   skippedFill: new THREE.Color("#111113"),
   skippedEdge: new THREE.Color("#26262a"),
-  lineIdle: new THREE.Color("#2a2a2e"),
-  lineDone: new THREE.Color("#5c5c62"),
+  lineIdle: new THREE.Color("#45454c"),
+  lineDone: new THREE.Color("#8a8a92"),
 };
 
 const N = NODES.length;
