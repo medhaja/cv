@@ -625,12 +625,17 @@
 }
 @media (prefers-reduced-motion: no-preference) {
   .hero-line > span {
-    animation: line-rise 0.7s var(--ease-out) both;
-    animation-delay: calc(var(--d, 0) * 70ms);
+    animation: line-rise 0.55s var(--ease-out) both;
+    animation-delay: calc(var(--d, 0) * 50ms);
   }
   .hero-fade {
-    animation: fade-up 0.6s var(--ease-out) both;
-    animation-delay: calc(var(--d, 0) * 70ms);
+    animation: fade-up 0.5s var(--ease-out) both;
+    animation-delay: calc(var(--d, 0) * 50ms);
+  }
+  /* CTAs + profile links arrive last, ~1s after the headline lands. */
+  .hero-fade.hero-late {
+    animation-duration: 0.6s;
+    animation-delay: 1s;
   }
 }
 @keyframes line-rise {
