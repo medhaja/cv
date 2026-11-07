@@ -1,5 +1,4 @@
 import { hero, site } from "@/content/site";
-import { SmartLink } from "../SmartLink";
 import { Rich } from "../Rich";
 import { Container, Button, TextLink } from "../ui";
 import { HeroGraph } from "../hero/HeroGraph";
@@ -63,17 +62,12 @@ export function Hero() {
               <Button link={hero.ctas[0]} />
               <Button link={hero.ctas[1]} variant="secondary" />
             </div>
-            <ul className="flex flex-wrap gap-x-6 gap-y-3 font-mono text-small [&_a]:inline-flex [&_a]:min-h-6 [&_a]:items-center">
+            <ul className="flex gap-6 font-mono text-small [&_a]:inline-flex [&_a]:min-h-6 [&_a]:items-center">
               {hero.links.map((l) => (
                 <li key={l.href}>
                   <TextLink link={l} />
                 </li>
               ))}
-              <li>
-                <SmartLink className="link" href="/isocline/#architecture">
-                  Isocline architecture
-                </SmartLink>
-              </li>
               {site.links.resume && (
                 <li>
                   <a className="link" href={site.links.resume}>
