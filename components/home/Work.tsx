@@ -40,6 +40,18 @@ export function Work() {
               </li>
             ))}
           </ul>
+          <ul className="mt-6 flex flex-wrap gap-x-6 gap-y-3 font-mono text-small [&_a]:inline-flex [&_a]:min-h-6 [&_a]:items-center">
+            <li>
+              <SmartLink className="link" href="/isocline/">
+                Read the case study<span aria-hidden="true">&nbsp;→</span>
+              </SmartLink>
+            </li>
+            <li>
+              <SmartLink className="link" href="/isocline/#architecture">
+                See the architecture<span aria-hidden="true">&nbsp;→</span>
+              </SmartLink>
+            </li>
+          </ul>
         </div>
       }
     >
